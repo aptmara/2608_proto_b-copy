@@ -3,11 +3,18 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(CanvasGroup))]
 public class FadeManager : Singleton<FadeManager>
 {
     [SerializeField] private GameObject loadingCanvas;
     
-    private Animator anim;
+    [SerializeField, Header("フェードにかかる時間（秒）")]
+    private float fadeDuration = 1.0f;
+
+    [SerializeField, Header("フェードインからフェードアウトまでの待機時間（秒）")]
+    private float holdDuration = 0.5f;
+    
+    private CanvasGroup canvasGroup;
     private bool isChanged = false;
 
     /// <summary> 直前のシーン名を取得します </summary>
@@ -19,7 +26,14 @@ public class FadeManager : Singleton<FadeManager>
     protected override void Awake()
     {
         base.Awake();
-        anim = GetComponent<Animator>();
+        canvasGroup = GetComponent<CanvasGroup>();
+        
+        // 初期状態では透明・クリック判定なしにしておく
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 0f;
+            canvasGroup.blocksRaycasts = false;
+        }
     }
 
     /// <summary>
@@ -60,32 +74,31 @@ public class FadeManager : Singleton<FadeManager>
         // UI操作を無効化
         SetNavigationEvents(false);
 
-        // フェードイン（画面を暗くする）
-        yield return StartCoroutine(Fade(1));
+        // フェードイン（画面を暗くする：Alpha 0 -> 1）
+        yield return StartCoroutine(Fade(1f));
 
         // シーンロード直前に Loading 表示をオン
-        if (loadingCanvas != null)
+        // （※ loadingCanvas が FadeManager 自身（gameObject）を指していると
+        //   非アクティブ化でコルーチンが停止しフェードが完走しないため、自オブジェクトは対象外にする）
+        if (loadingCanvas != null && loadingCanvas != gameObject)
         {
             loadingCanvas.SetActive(true);
         }
 
-        // 非同期でシーンをロード
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
-
-        yield return new WaitForSecondsRealtime(0.1f);
+        // シーンをロード（軽量なため同期ロード）
+        SceneManager.LoadScene(sceneName);
 
         // フェードアウト開始直前に Loading 表示をオフ
-        if (loadingCanvas != null)
+        if (loadingCanvas != null && loadingCanvas != gameObject)
         {
             loadingCanvas.SetActive(false);
         }
 
-        // フェードアウト（画面を明るくする）
-        yield return StartCoroutine(Fade(0));
+        // フェードインとフェードアウトの間の待機（画面を真っ黒のまま保持）
+        yield return new WaitForSecondsRealtime(holdDuration);
+
+        // フェードアウト（画面を明るくする：Alpha 1 -> 0）
+        yield return StartCoroutine(Fade(0f));
 
         // UI操作を有効化
         SetNavigationEvents(true);
@@ -95,23 +108,33 @@ public class FadeManager : Singleton<FadeManager>
 
     private IEnumerator Fade(float targetAlpha)
     {
-        if (anim == null) yield break;
+        if (canvasGroup == null) yield break;
 
-        string stateName = targetAlpha == 1 ? "FadeIn" : "FadeOut";
-        anim.SetTrigger(stateName);
+        // フェード中は念のためCanvasGroupのクリックブロックを有効化
+        canvasGroup.blocksRaycasts = true;
 
-        yield return null; // 1フレーム待機してAnimatorのステート更新を反映
+        float startAlpha = canvasGroup.alpha;
+        float time = 0f;
 
-        // 指定ステートに遷移完了するまで待機
-        while (!anim.GetCurrentAnimatorStateInfo(0).IsName(stateName))
+        // 指定した時間（fadeDuration）かけてAlpha値を変化させる
+        while (time < fadeDuration)
         {
+            // Time.unscaledDeltaTimeを使用し、TimeScaleの変更に影響されないようにする
+            time += Time.unscaledDeltaTime;
+            
+            // 0～1の割合を計算し、Alphaを補間
+            canvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, time / fadeDuration);
+            
             yield return null;
         }
 
-        // アニメーションの再生が完了するまで待機
-        while (anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+        // 最終的なAlpha値を確実にセット
+        canvasGroup.alpha = targetAlpha;
+
+        // フェードアウト（画面が完全に見える状態）完了時のみクリックブロックを解除
+        if (targetAlpha == 0f)
         {
-            yield return null;
+            canvasGroup.blocksRaycasts = false;
         }
     }
 

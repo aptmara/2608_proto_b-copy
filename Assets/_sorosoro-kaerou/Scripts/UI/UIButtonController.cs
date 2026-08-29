@@ -13,7 +13,12 @@ public class UIButtonController : MonoBehaviour
     {
         if (targetButton == null)
         {
-            targetButton = GetComponent<Button>() ?? FindFirstObjectByType<Button>();
+            targetButton = GetComponent<Button>();
+
+            if (targetButton == null)
+            {
+                Debug.LogWarning("[UIButtonController] targetButton が未設定です。Inspector で Button を割り当ててください。", this);
+            }
         }
     }
 
@@ -35,7 +40,6 @@ public class UIButtonController : MonoBehaviour
 
     private void OnButtonClicked()
     {
-        Debug.Log("ボタンが押されました！");
         onButtonClicked?.Invoke();
     }
 }
