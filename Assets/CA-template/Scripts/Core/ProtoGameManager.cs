@@ -1,229 +1,66 @@
-using Proto.Input;
-using Proto.UI;
-using ProtoInput.Core;
 using UnityEngine;
+using TMPro;
 
-namespace Proto.Core
+namespace Proto.UI
 {
     /// <summary>
-    ///     ゲーム全体を管理するマネージャークラス
-    ///     各システムの統合例として使用
+    /// デバッグ用のUI表示および簡易操作を管理するクラス
     /// </summary>
-    public class ProtoGameManager : MonoBehaviour
+    public class ProtoDebugUI : MonoBehaviour
     {
-        [Header("System References")] [SerializeField]
-        private ProtoInputManager inputManager;
+        [Header("UI References")]
+        [SerializeField, Tooltip("FPSを表示するTMP_Text（任意）")]
+        private TMP_Text fpsText;
 
-        [SerializeField] private ProtoSafeAreaHandler safeAreaHandler;
-        [SerializeField] private ProtoVirtualJoystick virtualJoystick;
-        [SerializeField] private ProtoDebugUI debugUI;
+        [SerializeField, Tooltip("デバッグログを表示するTMP_Text（任意）")]
+        private TMP_Text logText;
 
-        [Header("Game Settings")] [SerializeField]
-        private bool enableDebugMode = true;
+        [SerializeField, Tooltip("デバッグ表示全体の親オブジェクト（任意）")]
+        private GameObject debugPanel;
 
-        [SerializeField] private bool enableSafeArea = true;
-        [SerializeField] private bool enableJoystick = true;
+        private float deltaTime;
 
-        private void Awake()
+        private void Update()
         {
-            InitializeSystems();
-        }
-
-        private void Start()
-        {
-            SetupEventListeners();
-            ApplySettings();
-        }
-
-        private void OnDestroy()
-        {
-            // イベントリスナーの解除
-            if (inputManager != null)
-            {
-                inputManager.MovementInputChanged -= OnMovementInputChanged;
-                inputManager.InputStarted -= OnInputStarted;
-                inputManager.InputEnded -= OnInputEnded;
-            }
-
-            if (virtualJoystick != null)
-            {
-                virtualJoystick.JoystickValueChanged -= OnJoystickValueChanged;
-                virtualJoystick.JoystickPressed -= OnJoystickPressed;
-                virtualJoystick.JoystickReleased -= OnJoystickReleased;
-            }
+            UpdateFPS();
         }
 
         /// <summary>
-        ///     システムの初期化
+        /// 画面上に簡易的なFPSを表示
         /// </summary>
-        private void InitializeSystems()
+        private void UpdateFPS()
         {
-            // 必要なコンポーネントを自動で探す
-            if (inputManager == null)
-                inputManager = FindObjectOfType<ProtoInputManager>();
-            if (safeAreaHandler == null)
-                safeAreaHandler = FindObjectOfType<ProtoSafeAreaHandler>();
-            if (virtualJoystick == null)
-                virtualJoystick = FindObjectOfType<ProtoVirtualJoystick>();
-            if (debugUI == null)
-                debugUI = FindObjectOfType<ProtoDebugUI>();
+            if (fpsText == null) return;
 
-            // 警告ログ
-            if (inputManager == null)
-                ProtoLogger.LogWarning("InputManager not found!", this);
-            if (safeAreaHandler == null)
-                ProtoLogger.LogWarning("SafeAreaHandler not found!", this);
-            if (virtualJoystick == null)
-                ProtoLogger.LogWarning("VirtualJoystick not found!", this);
-            if (debugUI == null)
-                ProtoLogger.LogWarning("DebugUI not found!", this);
+            deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
+            float fps = 1.0f / deltaTime;
+            fpsText.text = $"FPS: {Mathf.CeilToInt(fps)}";
         }
 
         /// <summary>
-        ///     イベントリスナーの設定
+        /// デバッグパネルの表示 / 非表示切り替え
         /// </summary>
-        private void SetupEventListeners()
+        public void ToggleDebugPanel()
         {
-            if (inputManager != null)
+            if (debugPanel != null)
             {
-                inputManager.MovementInputChanged += OnMovementInputChanged;
-                inputManager.InputStarted += OnInputStarted;
-                inputManager.InputEnded += OnInputEnded;
+                debugPanel.SetActive(!debugPanel.activeSelf);
             }
-
-            if (virtualJoystick != null)
+            else
             {
-                virtualJoystick.JoystickValueChanged += OnJoystickValueChanged;
-                virtualJoystick.JoystickPressed += OnJoystickPressed;
-                virtualJoystick.JoystickReleased += OnJoystickReleased;
+                gameObject.SetActive(!gameObject.activeSelf);
             }
         }
 
         /// <summary>
-        ///     設定の適用
+        /// 画面上にログを表示するためのメソッド
         /// </summary>
-        private void ApplySettings()
+        public void SetLogMessage(string message)
         {
-            // デバッグモードの設定
-            if (debugUI != null) debugUI.gameObject.SetActive(enableDebugMode);
-
-            // 安全領域の設定
-            if (safeAreaHandler != null)
+            if (logText != null)
             {
-                // SafeAreaHandlerの設定はインスペクターで行う
+                logText.text = message;
             }
-
-            // ジョイスティックの設定
-            if (virtualJoystick != null) virtualJoystick.SetJoystickEnabled(enableJoystick);
         }
-
-        #region Event Handlers
-
-        /// <summary>
-        ///     移動入力が変更された時の処理
-        /// </summary>
-        private void OnMovementInputChanged(Vector2 input)
-        {
-            // ここでプレイヤーの移動処理を行う
-            ProtoLogger.LogInput($"Movement Input: {input}", this);
-
-            // 例: プレイヤーキャラクターの移動
-            // playerController.Move(input);
-        }
-
-        /// <summary>
-        ///     入力が開始された時の処理
-        /// </summary>
-        private void OnInputStarted()
-        {
-            ProtoLogger.LogInput("Input Started", this);
-
-            // 例: プレイヤーのアニメーション開始
-            // playerController.StartMovementAnimation();
-        }
-
-        /// <summary>
-        ///     入力が終了した時の処理
-        /// </summary>
-        private void OnInputEnded()
-        {
-            ProtoLogger.LogInput("Input Ended", this);
-
-            // 例: プレイヤーのアニメーション停止
-            // playerController.StopMovementAnimation();
-        }
-
-        /// <summary>
-        ///     ジョイスティックの値が変更された時の処理
-        /// </summary>
-        private void OnJoystickValueChanged(Vector2 value)
-        {
-            ProtoLogger.LogInput($"Joystick Value: {value}", this);
-        }
-
-        /// <summary>
-        ///     ジョイスティックが押された時の処理
-        /// </summary>
-        private void OnJoystickPressed()
-        {
-            ProtoLogger.LogInput("Joystick Pressed", this);
-        }
-
-        /// <summary>
-        ///     ジョイスティックが離された時の処理
-        /// </summary>
-        private void OnJoystickReleased()
-        {
-            ProtoLogger.LogInput("Joystick Released", this);
-        }
-
-        #endregion
-
-        #region Public Methods
-
-        /// <summary>
-        ///     デバッグモードの切り替え
-        /// </summary>
-        public void ToggleDebugMode()
-        {
-            enableDebugMode = !enableDebugMode;
-            if (debugUI != null) debugUI.gameObject.SetActive(enableDebugMode);
-        }
-
-        /// <summary>
-        ///     安全領域の切り替え
-        /// </summary>
-        public void ToggleSafeArea()
-        {
-            enableSafeArea = !enableSafeArea;
-            if (safeAreaHandler != null) safeAreaHandler.ToggleSafeArea();
-        }
-
-        /// <summary>
-        ///     ジョイスティックの切り替え
-        /// </summary>
-        public void ToggleJoystick()
-        {
-            enableJoystick = !enableJoystick;
-            if (virtualJoystick != null) virtualJoystick.SetJoystickEnabled(enableJoystick);
-        }
-
-        /// <summary>
-        ///     すべてのシステムをリセット
-        /// </summary>
-        public void ResetAllSystems()
-        {
-            if (inputManager != null)
-            {
-                inputManager.SetInputEnabled(false);
-                inputManager.SetInputEnabled(true);
-            }
-
-            if (virtualJoystick != null) virtualJoystick.ResetJoystick();
-
-            ProtoLogger.LogInfo("All systems reset", this);
-        }
-
-        #endregion
     }
 }

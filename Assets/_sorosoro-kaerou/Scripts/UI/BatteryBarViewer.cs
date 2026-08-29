@@ -34,7 +34,7 @@ public class BatteryBarViewer : MonoBehaviour
 
         if (batteryText != null)
         {
-            batteryText.text = $"{Mathf.RoundToInt(currentValue * 100f)}%";
+            batteryText.text = $"{Mathf.RoundToInt(currentValue * 100f)}";
         }
     }
 
