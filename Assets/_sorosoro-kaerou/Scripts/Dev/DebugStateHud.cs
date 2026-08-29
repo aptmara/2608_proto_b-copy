@@ -7,7 +7,6 @@ using SoroSoro.Events;
 
 public sealed class DebugStateHud : MonoBehaviour
 {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
     int day;
     float progress;
     float battery = 1f;
@@ -91,5 +90,4 @@ public sealed class DebugStateHud : MonoBehaviour
         GUILayout.Label($"GameOver: {gameOverInfo}", label);
         GUILayout.EndArea();
     }
-#endif
 }

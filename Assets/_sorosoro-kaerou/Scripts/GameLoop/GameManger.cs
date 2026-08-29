@@ -37,9 +37,9 @@ public sealed class GameManager : MonoBehaviour
     void Awake()
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
-    // Android実機ではAndroidManagerから取得
-    input = AndroidManager.Instance as IPlayerInput;
-    feedback = AndroidManager.Instance as IFeedbackPresenter;
+        // Android実機ではAndroidManagerから取得
+        input = AndroidManager.Instance as IPlayerInput;
+        feedback = AndroidManager.Instance as IFeedbackPresenter;
 #else
         // Editor / その他の環境ではInspectorから取得
         input = inputSource as IPlayerInput;
