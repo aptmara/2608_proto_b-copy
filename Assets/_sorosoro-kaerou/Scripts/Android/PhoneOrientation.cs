@@ -14,17 +14,26 @@ public class PhoneGyro : MonoBehaviour
     [SerializeField] private TMP_Text directionText;
     [SerializeField] private TMP_Text feedbackText;
 
-    // スマホの生の角度
+    // 参考表示用の生オイラー角(ジンバルロックで暴れるため判定には使わない)
     public Vector3 phoneAngle;
 
-    // リセット時のZ角度
-    private float ZOffset = 0f;
+    // リセット時のYaw角度
+    private float yawOffset = 0f;
 
-    // 現在の基準からのZ角度
+    // 直近フレームで計算した生のYaw(-180〜180、キャリブレーション前)
+    private float rawYaw;
+
+    // 現在の基準からのYaw角度(0=正面, 180=背後の連続角度。isBack判定に使用)
     public float relativeZ;
+
+    // 上下の傾き(度。上向きが正、範囲はおよそ-90〜90)
+    public float pitch;
 
     // 反対方向を向いているか
     public bool isBack;
+
+    // スマホの姿勢(Unity座標変換後)
+    public Quaternion Rotation { get; private set; }
 
     // フィードバック用のインターフェース
     private IFeedbackPresenter feedback;
@@ -69,22 +78,26 @@ public class PhoneGyro : MonoBehaviour
             -attitude.w
         );
 
-
-        // =========================
-        // オイラー角
-        // =========================
-
-        phoneAngle = rotation.eulerAngles;
+        Rotation = rotation;
+        phoneAngle = rotation.eulerAngles; // 参考表示用のみ(判定には使わない)
 
 
         // =========================
-        // リセット位置を基準にしたY角度
+        // Yaw / Pitchをオイラー角ではなくベクトル射影(Atan2)で求める。
+        // オイラー角分解は途中の軸が90度付近になるとジンバルロックで
+        // 他の軸の値と入れ替わったように暴れるため、傾き操作(ピッチ)が
+        // 絡むこのアプリでは使えない。
         // =========================
 
-        relativeZ = Mathf.Repeat(
-            phoneAngle.z - ZOffset,
-            360f
-        );
+        // Vector3.upは体を振り向く回転(Yaw)の回転軸そのものに一致していて
+        // Yawに反応しなかったため、それと直交するVector3.forwardを使う
+        Vector3 lookDir = rotation * Vector3.forward; // スマホが向いている方向(要検証軸)
+
+        // Yaw/PitchがY・Zで入れ替わって見えたため、ペアリングをx-y(Yaw) / z(Pitch)に変更
+        rawYaw = Mathf.Atan2(lookDir.x, lookDir.y) * Mathf.Rad2Deg;
+        pitch = Mathf.Asin(Mathf.Clamp(lookDir.z, -1f, 1f)) * Mathf.Rad2Deg;
+
+        relativeZ = Mathf.Repeat(rawYaw - yawOffset, 360f);
 
 
         // =========================
@@ -126,9 +139,9 @@ public class PhoneGyro : MonoBehaviour
         if (rotationText != null)
         {
             rotationText.text =
-                $"Z : {phoneAngle.z:F1}°\n" +
-                $"Z Offset : {ZOffset:F1}°\n" +
-                $"Relative Z : {relativeZ:F1}°"
+                $"Yaw : {relativeZ:F1}°\n" +
+                $"Pitch : {pitch:F1}°\n" +
+                $"(raw X:{phoneAngle.x:F0} Y:{phoneAngle.y:F0} Z:{phoneAngle.z:F0})"
                 ;
         }
 
@@ -160,6 +173,6 @@ public class PhoneGyro : MonoBehaviour
 
     public void ResetRotation()
     {
-        ZOffset = phoneAngle.z;
+        yawOffset = rawYaw;
     }
 }

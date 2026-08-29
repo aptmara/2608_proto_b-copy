@@ -36,18 +36,6 @@ public sealed class GameManager : MonoBehaviour
 
     void Awake()
     {
-#if UNITY_ANDROID && !UNITY_EDITOR
-    // Android実機ではAndroidManagerから取得
-    input = AndroidManager.Instance as IPlayerInput;
-    feedback = AndroidManager.Instance as IFeedbackPresenter;
-#else
-        // Editor / その他の環境ではInspectorから取得
-        input = inputSource as IPlayerInput;
-        feedback = feedbackSource as IFeedbackPresenter;
-#endif
-
-        Debug.Assert(input != null, "IPlayerInputが取得できません", this);
-        Debug.Assert(feedback != null, "IFeedbackPresenterが取得できません", this);
         Debug.Assert(balance != null, "GameBalanceConfigが未設定です", this);
         Debug.Assert(dayConfigs != null && dayConfigs.Length > 0, "DayConfigが未設定です", this);
 
@@ -63,7 +51,25 @@ public sealed class GameManager : MonoBehaviour
 
     void Start()
     {
+        TryAcquireDependencies();
         StartGame();
+    }
+
+    // AndroidManager側のAwake()がこちらより先に走っている保証がないため、
+    // 取得できるまでUpdateから毎フレーム呼び直す
+    void TryAcquireDependencies()
+    {
+        if (input != null && feedback != null) return;
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+        // Android実機ではAndroidManagerから取得
+        input = AndroidManager.Instance.PlayerInput;
+        feedback = AndroidManager.Instance.Feedback;
+#else
+        // Editor / その他の環境ではInspectorから取得
+        input = inputSource as IPlayerInput;
+        feedback = feedbackSource as IFeedbackPresenter;
+#endif
     }
 
     public void StartGame()
@@ -110,6 +116,7 @@ public sealed class GameManager : MonoBehaviour
     void Update()
     {
         if (state.Phase is PhaseKind.Title or PhaseKind.GameOver or PhaseKind.Result) return;
+        if (input == null || feedback == null) TryAcquireDependencies();
         if (input == null || feedback == null) return;
 
         float dt = Time.deltaTime;
