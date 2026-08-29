@@ -393,6 +393,81 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 326684415}
   m_CullTransparentMesh: 1
+--- !u!1 &585613031
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 585613032}
+  - component: {fileID: 585613034}
+  - component: {fileID: 585613033}
+  m_Layer: 5
+  m_Name: Panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &585613032
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 585613031}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 596323234}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &585613033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 585613031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &585613034
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 585613031}
+  m_CullTransparentMesh: 1
 --- !u!1001 &596323233
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -412,6 +487,18 @@ PrefabInstance:
     - target: {fileID: 2496228829909266079, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3547762118185950965, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
+      propertyPath: onButtonClicked.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 922431545}
+    - target: {fileID: 3547762118185950965, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
+      propertyPath: onButtonClicked.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickContinue
+      objectReference: {fileID: 0}
+    - target: {fileID: 3547762118185950965, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
+      propertyPath: onButtonClicked.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: DayClearContinueButton, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5070715622746060787, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
       propertyPath: m_SortingOrder
@@ -475,9 +562,20 @@ PrefabInstance:
     - {fileID: 6629102571459936456, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
     - {fileID: 3729434906649955040, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
     - {fileID: 6178002963574901594, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
-    m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 5241513109602506646, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
+      insertIndex: 0
+      addedObject: {fileID: 585613032}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1432256823841143203, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 922431545}
   m_SourcePrefab: {fileID: 100100000, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
+--- !u!224 &596323234 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5241513109602506646, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
+  m_PrefabInstance: {fileID: 596323233}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &820780266
 GameObject:
   m_ObjectHideFlags: 0
@@ -581,6 +679,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &922431543 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1432256823841143203, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
+  m_PrefabInstance: {fileID: 596323233}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &922431545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 922431543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2c3a19a703f19e499cc4749578aff2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DayClearContinueButton
 --- !u!1 &1053912098
 GameObject:
   m_ObjectHideFlags: 0
@@ -638,7 +753,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "DAY1\u3000\u5E30\u5B85\u6210\u529F"
+  m_text: "DAY\u25CB\u3000\u5E30\u5B85\u6210\u529F"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d1e1d800f0a358049bdb52eb7f830671, type: 2}
   m_sharedMaterial: {fileID: 7242917898213433461, guid: d1e1d800f0a358049bdb52eb7f830671, type: 2}
@@ -762,9 +877,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0ac899c21a8764448fa414f128b439b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoroSoro.Events.GameClearResultHandler
+  headlineText: {fileID: 1053912100}
+  dayClearHeadlineFormat: "DAY{0}\u3000\u5E30\u5B85\u6210\u529F"
+  gameOverHeadlineFormat: "DAY{0}\u3000\u5E30\u5B85\u5931\u6557"
   reachedDayText: {fileID: 326684417}
   repelledCountText: {fileID: 1566364276}
   reasonText: {fileID: 322785081}
+  wastedCountText: {fileID: 0}
+  correctCountText: {fileID: 0}
+  batteryText: {fileID: 0}
 --- !u!1 &1180675955
 GameObject:
   m_ObjectHideFlags: 0

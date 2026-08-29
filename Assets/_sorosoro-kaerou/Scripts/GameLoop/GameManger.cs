@@ -2,7 +2,6 @@
 using UnityEngine;
 using SorosoroKaerou;
 using SoroSoro.Events;
-using UnityEngine.SceneManagement;
 
 public sealed class GameManager : MonoBehaviour
 {
@@ -14,9 +13,6 @@ public sealed class GameManager : MonoBehaviour
     [Header("設定")]
     [SerializeField] DayConfig[] dayConfigs;         // 先頭にDay0を置く
     [SerializeField] GameBalanceConfig balance;
-    
-    [Header("シーン")]
-    [SerializeField] string dayClearSceneName = "GameClearResult";
 
     IPlayerInput input;
     IFeedbackPresenter feedback;
@@ -31,13 +27,15 @@ public sealed class GameManager : MonoBehaviour
     IDaySequencer sequencer;
     System.Random random;
 
-    int repelledCount;
+    // dayStatsはBeginDayで、totalStatsはStartGameでリセットする
+    DayStats dayStats;
+    DayStats totalStats;
     bool wasTurnedBack;
 
     // 空振り硬直
     float stunTimer;
     bool isStunned => stunTimer > 0f;
-    
+
     bool waitingContinue;
 
     void Awake()
@@ -53,6 +51,8 @@ public sealed class GameManager : MonoBehaviour
         resolver = new JudgeResolver();
         battery = new BatteryModel(balance);
         soundPlayer = new SoundEventPlayer(balance, random);
+        dayStats = new DayStats();
+        totalStats = new DayStats();
     }
 
     void Start()
@@ -81,7 +81,7 @@ public sealed class GameManager : MonoBehaviour
     public void StartGame()
     {
         dayCounter.Reset();
-        repelledCount = 0;
+        totalStats.Reset();
         stunTimer = 0f;
         BeginDay(dayCounter.CurrentConfig);
     }
@@ -95,6 +95,7 @@ public sealed class GameManager : MonoBehaviour
         if (config == null) return;
 
         battery.Refill();
+        dayStats.Reset();
         progress.Reset(config.requiredWalkSeconds);
         judgeWindow.Close();
         state.ClearCurrentEvent();
@@ -265,9 +266,10 @@ public sealed class GameManager : MonoBehaviour
 
         var config = dayCounter.CurrentConfig;
 
-        if (result == JudgeResult.Repelled && config.countScore)
+        if (config.countScore)
         {
-            repelledCount++;
+            dayStats.Add(result);
+            totalStats.Add(result);
         }
 
         GameEvents.RaiseJudged(result);
@@ -310,37 +312,46 @@ public sealed class GameManager : MonoBehaviour
 
     // ---------------------------------------------------------------
     // 日の終了 → その日のリザルト → 次の日へ
+    //
+    // GameClearResultシーンのロード・アンロードはGameClearSceneTransitionの責務。
+    // ここでは操作を止めて OnDayClearContinue を待つだけに留める。
+    // 両方でLoadSceneAsyncを呼ぶとシーンが二重に積まれるため注意。
     // ---------------------------------------------------------------
     void EndDay()
     {
         StopSound();
         state.SetPhase(PhaseKind.DayClear);
         feedback.SetLight(false);
+
+        dayStats.BatteryRemaining = battery.Normalized;
+
+        // dayStatsは直後のBeginDayでResetされるため、値をコピーして渡す
         var clearResult = new ResultData
         {
             ReachedDay = dayCounter.CurrentDay,
-            RepelledCount = repelledCount,
+            RepelledCount = dayStats.Repelled,
+            TotalWasted = dayStats.Wasted,
+            TotalCorrect = dayStats.Correct,
+            BatteryRemaining = dayStats.BatteryRemaining,
             // Reason は日クリア時には使用しない（ゲームオーバー時のみ使用）
         };
+
         GameEvents.RaiseDayCleared(clearResult);
         StartCoroutine(DayClearRoutine());
     }
-    
+
     System.Collections.IEnumerator DayClearRoutine()
     {
-        yield return SceneManager.LoadSceneAsync(dayClearSceneName, LoadSceneMode.Additive);
-
         waitingContinue = true;
         GameEvents.OnDayClearContinue += OnContinue;
         while (waitingContinue) yield return null;
         GameEvents.OnDayClearContinue -= OnContinue;
 
-        yield return SceneManager.UnloadSceneAsync(dayClearSceneName);
-
+        // 最終DayConfigまで到達済みならAdvance()は何もしないため、同じ日を繰り返す
         dayCounter.Advance();
         BeginDay(dayCounter.CurrentConfig);
     }
-    
+
     void OnContinue() => waitingContinue = false;
 
     // ---------------------------------------------------------------
@@ -352,10 +363,15 @@ public sealed class GameManager : MonoBehaviour
         state.SetPhase(PhaseKind.GameOver);
         feedback.SetLight(false);
 
+        totalStats.BatteryRemaining = battery.Normalized;
+
         var data = new ResultData
         {
             ReachedDay = dayCounter.CurrentDay,
-            RepelledCount = repelledCount,
+            RepelledCount = totalStats.Repelled,
+            TotalWasted = totalStats.Wasted,
+            TotalCorrect = totalStats.Correct,
+            BatteryRemaining = totalStats.BatteryRemaining,
             Reason = reason,
         };
 
@@ -367,12 +383,16 @@ public sealed class GameManager : MonoBehaviour
     // ---------------------------------------------------------------
     public void Retry()
     {
+        // DayClear待機中にRetryされた場合にコルーチンが残らないよう明示的に止める
+        StopAllCoroutines();
+        GameEvents.OnDayClearContinue -= OnContinue;
+        waitingContinue = false;
+
         wasTurnedBack = false;
         stunTimer = 0f;
         StartGame();
     }
-    
-    
+
     // ---------------------------------------------------------------
     // 音の消去
     // ---------------------------------------------------------------

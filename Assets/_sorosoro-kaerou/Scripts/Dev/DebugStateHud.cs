@@ -13,6 +13,7 @@ public sealed class DebugStateHud : MonoBehaviour
     bool isAiming;
     string lastSound = "-";
     string lastJudged = "-";
+    string dayClearInfo = "-";
     string gameOverInfo = "-";
 
     bool judgeOpen;
@@ -30,6 +31,7 @@ public sealed class DebugStateHud : MonoBehaviour
         GameEvents.OnAimStarted += HandleAimStarted;
         GameEvents.OnAimEnded += HandleAimEnded;
         GameEvents.OnDayCleared += HandleDayCleared;
+        GameEvents.OnDayClearContinue += HandleDayClearContinue;
         GameEvents.OnGameOver += HandleGameOver;
     }
 
@@ -44,6 +46,7 @@ public sealed class DebugStateHud : MonoBehaviour
         GameEvents.OnAimStarted -= HandleAimStarted;
         GameEvents.OnAimEnded -= HandleAimEnded;
         GameEvents.OnDayCleared -= HandleDayCleared;
+        GameEvents.OnDayClearContinue -= HandleDayClearContinue;
         GameEvents.OnGameOver -= HandleGameOver;
     }
 
@@ -55,18 +58,28 @@ public sealed class DebugStateHud : MonoBehaviour
     void HandleJudged(JudgeResult r) { lastJudged = r.ToString(); judgeOpen = false; }
     void HandleAimStarted() => isAiming = true;
     void HandleAimEnded() => isAiming = false;
-    void HandleDayCleared(ResultData data) => lastJudged = $"DayCleared(day{data.ReachedDay} repelled={data.RepelledCount})";
+
+    // OnDayClearedはその日単位の値、OnGameOverは累計値。
+    // 同じResultData型なので表示ラベルで区別できるようにしておく。
+    void HandleDayCleared(ResultData data)
+        => dayClearInfo = $"day{data.ReachedDay} rep={data.RepelledCount} cor={data.TotalCorrect} was={data.TotalWasted} bat={data.BatteryRemaining:P0}";
+
+    void HandleDayClearContinue()
+        => dayClearInfo += " [continued]";
+
     void HandleGameOver(ResultData data)
-        => gameOverInfo = $"day={data.ReachedDay} repelled={data.RepelledCount} reason={data.Reason}";
+        => gameOverInfo = $"day={data.ReachedDay} rep={data.RepelledCount} cor={data.TotalCorrect} was={data.TotalWasted} bat={data.BatteryRemaining:P0} reason={data.Reason}";
 
     void OnGUI()
     {
         // 画面解像度に依存せず必ず全項目が収まるよう、高さを動的に確保する
-        float areaWidth = 1000f;
-        float areaHeight = 800f;
+        float areaWidth = 1400f;
+        float areaHeight = 950f;
 
         GUIStyle title = new GUIStyle(GUI.skin.label) { fontSize = 64, fontStyle = FontStyle.Bold };
         GUIStyle label = new GUIStyle(GUI.skin.label) { fontSize = 64, wordWrap = false };
+        // 項目が増えた2行だけは64pxだと横に収まらないため縮小する
+        GUIStyle small = new GUIStyle(GUI.skin.label) { fontSize = 36, wordWrap = false };
 
         GUILayout.BeginArea(new Rect(10, 10, areaWidth, areaHeight), GUI.skin.box);
         GUILayout.Label("Debug State HUD", title);
@@ -87,7 +100,8 @@ public sealed class DebugStateHud : MonoBehaviour
         }
 
         GUILayout.Label($"LastJudged: {lastJudged}", label);
-        GUILayout.Label($"GameOver: {gameOverInfo}", label);
+        GUILayout.Label($"DayClear: {dayClearInfo}", small);
+        GUILayout.Label($"GameOver: {gameOverInfo}", small);
         GUILayout.EndArea();
     }
 }

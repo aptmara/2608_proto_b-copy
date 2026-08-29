@@ -19,7 +19,12 @@ namespace SoroSoro.Events
         [SerializeField] private float batteryValue = 1.0f;
         [SerializeField] private float progressValue = 0.5f;
         [SerializeField] private GameOverReason gameOverReason = GameOverReason.Missed;
+
+        [Header("リザルト用ダミー値")]
         [SerializeField] private int repelledCount = 3;
+        [SerializeField] private int wastedCount = 1;
+        [SerializeField] private int correctCount = 5;
+        [SerializeField, Range(0f, 1f)] private float batteryRemaining = 0.4f;
 
         private Vector2 scrollPosition = Vector2.zero;
 
@@ -28,7 +33,7 @@ namespace SoroSoro.Events
             // 操作しやすいよう全体スケール・サイズを拡張
             float panelWidth = 350f;
             float panelHeight = Mathf.Min(Screen.height - 40f, 800f);
-            
+
             GUIStyle buttonStyle = new GUIStyle(GUI.skin.button)
             {
                 fontSize = 18,
@@ -101,9 +106,20 @@ namespace SoroSoro.Events
                 {
                     ReachedDay = day,
                     RepelledCount = repelledCount,
+                    TotalWasted = wastedCount,
+                    TotalCorrect = correctCount,
+                    BatteryRemaining = batteryRemaining,
                     // Reason は日クリア時には使用しない
                 };
                 GameEvents.RaiseDayCleared(clearData);
+            }
+            GUILayout.Space(5);
+
+            // ButtonHandlerを経由せずGameManagerの待機を解除できる。
+            // GameClearResultシーンが未完成でも次の日へ進められるため検証が速い。
+            if (GUILayout.Button("OnDayClearContinue", buttonStyle))
+            {
+                GameEvents.RaiseDayClearContinue();
             }
             GUILayout.Space(5);
 
@@ -113,6 +129,9 @@ namespace SoroSoro.Events
                 {
                     ReachedDay = day,
                     RepelledCount = repelledCount,
+                    TotalWasted = wastedCount,
+                    TotalCorrect = correctCount,
+                    BatteryRemaining = batteryRemaining,
                     Reason = gameOverReason
                 };
                 GameEvents.RaiseGameOver(data);

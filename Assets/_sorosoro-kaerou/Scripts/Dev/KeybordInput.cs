@@ -15,7 +15,7 @@ namespace SorosoroKaerou
 
         public bool IsTurnedBack => Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow);
 
-        public bool ShutterDown => Input.GetKeyDown(KeyCode.Space);
+        public bool ShutterDown => Input.GetKeyDown(KeyCode.Z);
 
         private void Update()
         {
