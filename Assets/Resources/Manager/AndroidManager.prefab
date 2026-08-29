@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &621585241896916211
+--- !u!1 &5387963265087486980
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,12 +8,13 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3516338278986634027}
-  - component: {fileID: 5166439643413292786}
-  - component: {fileID: 5180664962673080969}
-  - component: {fileID: 7143276774802562}
-  - component: {fileID: 1971095104275959243}
-  - component: {fileID: 8006452011988177465}
+  - component: {fileID: 4449420320868107452}
+  - component: {fileID: 6106831844590801210}
+  - component: {fileID: 5638333970613048768}
+  - component: {fileID: 2982747325379945972}
+  - component: {fileID: 1555996634022237015}
+  - component: {fileID: 6752349566929669984}
+  - component: {fileID: 3759965514639237428}
   m_Layer: 0
   m_Name: AndroidManager
   m_TagString: Untagged
@@ -21,13 +22,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3516338278986634027
+--- !u!4 &4449420320868107452
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 621585241896916211}
+  m_GameObject: {fileID: 5387963265087486980}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: -0, z: 0}
@@ -36,13 +37,13 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5166439643413292786
+--- !u!114 &6106831844590801210
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 621585241896916211}
+  m_GameObject: {fileID: 5387963265087486980}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 309f508493c3f094280e2df49990add8, type: 3}
@@ -54,52 +55,64 @@ MonoBehaviour:
   phoneAngle: {x: 0, y: 0, z: 0}
   relativeZ: 0
   isBack: 0
---- !u!114 &5180664962673080969
+--- !u!114 &5638333970613048768
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 621585241896916211}
+  m_GameObject: {fileID: 5387963265087486980}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1fd59ff35872d74b9341eb14af8a816, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraPermission
---- !u!114 &7143276774802562
+--- !u!114 &2982747325379945972
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 621585241896916211}
+  m_GameObject: {fileID: 5387963265087486980}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40e3ad120c788574c86e22f35df6269f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AndroidTorch
   spawnPrefab: {fileID: 4874760033738049722, guid: f17a4389d6b27064ea25c09ad639b7db, type: 3}
---- !u!114 &1971095104275959243
+--- !u!114 &1555996634022237015
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 621585241896916211}
+  m_GameObject: {fileID: 5387963265087486980}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6bb91345577c9f74da3d26565ef12441, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AndroidFeedbackPresenter
---- !u!114 &8006452011988177465
+--- !u!114 &6752349566929669984
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 621585241896916211}
+  m_GameObject: {fileID: 5387963265087486980}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a29f4ef04fd609a408015a13f7018ed2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AndroidPlayerInput
+--- !u!114 &3759965514639237428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5387963265087486980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 942f057aae3fdbe4bb06fdee5a61435f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AndroidManager

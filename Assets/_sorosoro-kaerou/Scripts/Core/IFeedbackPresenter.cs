@@ -5,14 +5,10 @@ namespace SorosoroKaerou
     /// </summary>
     public interface IFeedbackPresenter
     {
-        /// <summary>ライトの点灯・消灯を切り替える</summary>
-        /// <param name="on">点灯状態にする場合はtrue</param>
+        bool IsLightOn { get; }
+
         void SetLight(bool on);
-
-        /// <summary>撮影時のフラッシュ発光を実行する</summary>
         void Flash();
-
-        /// <summary>端末の振動を実行する</summary>
         void Vibrate();
     }
 }

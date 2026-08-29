@@ -5,6 +5,8 @@ public class AndroidFeedbackPresenter : MonoBehaviour, IFeedbackPresenter
 {
     private AndroidTorch torch;
 
+    public bool IsLightOn => torch != null && torch.IsOn;
+
     private void Awake()
     {
         torch = GetComponent<AndroidTorch>();

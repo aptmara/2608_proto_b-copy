@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
 
 namespace SorosoroKaerou
@@ -9,6 +10,8 @@ namespace SorosoroKaerou
     /// </summary>
     public sealed class EditorFeedbackPresenter : MonoBehaviour, IFeedbackPresenter
     {
+        public bool IsLightOn => false;
+
         [SerializeField] private Image overlayImage;
         [SerializeField] private float lightAlpha = 0.3f;
         [SerializeField] private float flashDuration = 0.1f;
