@@ -34,8 +34,8 @@ namespace SoroSoro.Events
         // 進行度変化時（引数: 0.0〜1.0の正規化進行度）
         public static event Action<float> OnProgressChanged;
 
-        // 帰宅時（引数: 日数）
-        public static event Action<int> OnDayCleared;
+        // 帰宅時（引数: リザルトデータ）
+        public static event Action<ResultData> OnDayCleared;
 
         // ゲームオーバー時（引数: リザルトデータ）
         public static event Action<ResultData> OnGameOver;
@@ -77,7 +77,7 @@ namespace SoroSoro.Events
         }
 
         public static void RaiseProgressChanged(float normalized) => OnProgressChanged?.Invoke(normalized);
-        public static void RaiseDayCleared(int day) => OnDayCleared?.Invoke(day);
+        public static void RaiseDayCleared(ResultData data) => OnDayCleared?.Invoke(data);
         
         public static void RaiseDayClearContinue() => OnDayClearContinue?.Invoke();
         public static void RaiseGameOver(ResultData data) => OnGameOver?.Invoke(data);

@@ -19,6 +19,35 @@ namespace SoroSoro.Events
         private TMP_Text reasonText;
 
         /// <summary>
+        /// 日クリア時の結果（到達日数・撃退数）をUIに反映します。
+        /// ゲームオーバー理由は日クリア時に受け取れないため空にします。
+        /// </summary>
+        /// <param name="data">表示するResultData</param>
+        public void DisplayDayResult(ResultData data)
+        {
+            if (data == null)
+            {
+                Debug.LogWarning("ResultDataがnullのため、結果を表示できません。");
+                return;
+            }
+
+            if (reachedDayText != null)
+            {
+                reachedDayText.text = $"{data.ReachedDay} 日";
+            }
+
+            if (repelledCountText != null)
+            {
+                repelledCountText.text = $"{data.RepelledCount} 回";
+            }
+
+            if (reasonText != null)
+            {
+                reasonText.text = string.Empty;
+            }
+        }
+
+        /// <summary>
         /// リザルト結果をUIに反映します。
         /// </summary>
         /// <param name="data">表示するResultData</param>

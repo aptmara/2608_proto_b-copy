@@ -97,7 +97,13 @@ namespace SoroSoro.Events
 
             if (GUILayout.Button("OnDayCleared", buttonStyle))
             {
-                GameEvents.RaiseDayCleared(day);
+                var clearData = new ResultData
+                {
+                    ReachedDay = day,
+                    RepelledCount = repelledCount,
+                    // Reason は日クリア時には使用しない
+                };
+                GameEvents.RaiseDayCleared(clearData);
             }
             GUILayout.Space(5);
 

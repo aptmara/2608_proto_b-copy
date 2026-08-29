@@ -309,7 +309,13 @@ public sealed class GameManager : MonoBehaviour
         StopSound();
         state.SetPhase(PhaseKind.DayClear);
         feedback.SetLight(false);
-        GameEvents.RaiseDayCleared(dayCounter.CurrentDay);
+        var clearResult = new ResultData
+        {
+            ReachedDay = dayCounter.CurrentDay,
+            RepelledCount = repelledCount,
+            // Reason は日クリア時には使用しない（ゲームオーバー時のみ使用）
+        };
+        GameEvents.RaiseDayCleared(clearResult);
         StartCoroutine(DayClearRoutine());
     }
     

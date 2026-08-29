@@ -55,7 +55,7 @@ public sealed class DebugStateHud : MonoBehaviour
     void HandleJudged(JudgeResult r) { lastJudged = r.ToString(); judgeOpen = false; }
     void HandleAimStarted() => isAiming = true;
     void HandleAimEnded() => isAiming = false;
-    void HandleDayCleared(int d) => lastJudged = $"DayCleared(day{d})";
+    void HandleDayCleared(ResultData data) => lastJudged = $"DayCleared(day{data.ReachedDay} repelled={data.RepelledCount})";
     void HandleGameOver(ResultData data)
         => gameOverInfo = $"day={data.ReachedDay} repelled={data.RepelledCount} reason={data.Reason}";
 
