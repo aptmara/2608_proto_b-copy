@@ -242,9 +242,6 @@ public sealed class GameManager : MonoBehaviour
         JudgeResult result = resolver.Resolve(ctx);
         judgeWindow.Close();
 
-        // 本編ではRetry()は空実装。Day0だけが実質的な意味を持つ
-        sequencer.Retry();
-
         var config = dayCounter.CurrentConfig;
 
         if (result == JudgeResult.Repelled && config.countScore)
@@ -258,6 +255,13 @@ public sealed class GameManager : MonoBehaviour
 
         if (result == JudgeResult.Missed)
         {
+            // 判定失敗時だけ無条件でRetry()を呼ぶ。
+            // 本編（RandomSequencer）ではRetry()は空実装なので実質何もしない。
+            // Day0（TutorialSequencer）ではここで初めて「同じ音をもう一度鳴らす」予約が入る。
+            // 成功時に呼んでしまうとindexが進む前に再生予約が立ち、
+            // 正解してもいつまでも同じ音がループし続けるバグになるため、必ずMissedの中だけに限定する。
+            sequencer.Retry();
+
             if (config.allowGameOver)
             {
                 GameOver(resolver.ResolveReason(ctx));
