@@ -63,7 +63,7 @@ public sealed class DebugStateHud : MonoBehaviour
     void OnGUI()
     {
         // 画面解像度に依存せず必ず全項目が収まるよう、高さを動的に確保する
-        float areaWidth = 600f;
+        float areaWidth = 1000f;
         float areaHeight = 800f;
 
         GUIStyle title = new GUIStyle(GUI.skin.label) { fontSize = 64, fontStyle = FontStyle.Bold };
