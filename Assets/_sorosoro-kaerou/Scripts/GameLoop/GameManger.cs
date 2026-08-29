@@ -2,6 +2,7 @@
 using UnityEngine;
 using SorosoroKaerou;
 using SoroSoro.Events;
+using UnityEngine.SceneManagement;
 
 public sealed class GameManager : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public sealed class GameManager : MonoBehaviour
     [Header("設定")]
     [SerializeField] DayConfig[] dayConfigs;         // 先頭にDay0を置く
     [SerializeField] GameBalanceConfig balance;
+    
+    [Header("シーン")]
+    [SerializeField] string dayClearSceneName = "GameClearResult";
 
     IPlayerInput input;
     IFeedbackPresenter feedback;
@@ -30,9 +34,11 @@ public sealed class GameManager : MonoBehaviour
     int repelledCount;
     bool wasTurnedBack;
 
-    // 空振り硬直（UniTask未導入のためTickベースの簡易実装）
+    // 空振り硬直
     float stunTimer;
     bool isStunned => stunTimer > 0f;
+    
+    bool waitingContinue;
 
     void Awake()
     {
@@ -79,6 +85,7 @@ public sealed class GameManager : MonoBehaviour
     // ---------------------------------------------------------------
     void BeginDay(DayConfig config)
     {
+        StopSound();
         if (config == null) return;
 
         battery.Refill();
@@ -109,7 +116,7 @@ public sealed class GameManager : MonoBehaviour
     // ---------------------------------------------------------------
     void Update()
     {
-        if (state.Phase is PhaseKind.Title or PhaseKind.GameOver or PhaseKind.Result) return;
+        if (state.Phase is PhaseKind.Title or PhaseKind.GameOver or PhaseKind.Result or PhaseKind.DayClear) return;
         if (input == null || feedback == null) return;
 
         float dt = Time.deltaTime;
@@ -295,21 +302,40 @@ public sealed class GameManager : MonoBehaviour
     }
 
     // ---------------------------------------------------------------
-    // 日の終了 → 次の日へ
+    // 日の終了 → その日のリザルト → 次の日へ
     // ---------------------------------------------------------------
     void EndDay()
     {
+        StopSound();
         state.SetPhase(PhaseKind.DayClear);
+        feedback.SetLight(false);
         GameEvents.RaiseDayCleared(dayCounter.CurrentDay);
+        StartCoroutine(DayClearRoutine());
+    }
+    
+    System.Collections.IEnumerator DayClearRoutine()
+    {
+        yield return SceneManager.LoadSceneAsync(dayClearSceneName, LoadSceneMode.Additive);
+
+        waitingContinue = true;
+        GameEvents.OnDayClearContinue += OnContinue;
+        while (waitingContinue) yield return null;
+        GameEvents.OnDayClearContinue -= OnContinue;
+
+        yield return SceneManager.UnloadSceneAsync(dayClearSceneName);
+
         dayCounter.Advance();
         BeginDay(dayCounter.CurrentConfig);
     }
+    
+    void OnContinue() => waitingContinue = false;
 
     // ---------------------------------------------------------------
     // ゲームオーバー
     // ---------------------------------------------------------------
     void GameOver(GameOverReason reason)
     {
+        StopSound();
         state.SetPhase(PhaseKind.GameOver);
         feedback.SetLight(false);
 
@@ -331,5 +357,17 @@ public sealed class GameManager : MonoBehaviour
         wasTurnedBack = false;
         stunTimer = 0f;
         StartGame();
+    }
+    
+    
+    // ---------------------------------------------------------------
+    // 音の消去
+    // ---------------------------------------------------------------
+    void StopSound()
+    {
+        if (audioSource == null) return;
+        audioSource.Stop();
+        audioSource.clip = null;
+        audioSource.pitch = 1f;
     }
 }

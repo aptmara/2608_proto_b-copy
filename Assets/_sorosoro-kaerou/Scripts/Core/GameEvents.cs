@@ -39,6 +39,8 @@ namespace SoroSoro.Events
 
         // ゲームオーバー時（引数: リザルトデータ）
         public static event Action<ResultData> OnGameOver;
+        
+        public static event System.Action OnDayClearContinue;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()
@@ -76,6 +78,8 @@ namespace SoroSoro.Events
 
         public static void RaiseProgressChanged(float normalized) => OnProgressChanged?.Invoke(normalized);
         public static void RaiseDayCleared(int day) => OnDayCleared?.Invoke(day);
+        
+        public static void RaiseDayClearContinue() => OnDayClearContinue?.Invoke();
         public static void RaiseGameOver(ResultData data) => OnGameOver?.Invoke(data);
     }
 }
