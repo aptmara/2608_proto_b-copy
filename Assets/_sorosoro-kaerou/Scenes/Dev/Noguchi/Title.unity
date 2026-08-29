@@ -752,9 +752,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TitleSceneChanger
   titleCanvasGroup: {fileID: 657425808}
-  dialogController: {fileID: 2137257542}
+  dialogManager: {fileID: 2137257542}
   nextSceneName: MainGame
   fadeDuration: 1
+  waitBeforeDialog: 1
   dialogMessage: "\u305D\u308D\u305D\u308D\u5E30\u308D\u3046..."
 --- !u!1 &1283281796
 GameObject:

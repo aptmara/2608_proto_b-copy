@@ -5,11 +5,15 @@ public class TitleSceneChanger : MonoBehaviour
 {
     [Header("UI Component References")]
     [SerializeField] private CanvasGroup titleCanvasGroup;
-    [SerializeField] private UIDialogController dialogController;
+    [SerializeField] private UIDialogManager dialogManager;
 
     [Header("Transition Settings")]
     [SerializeField] private string nextSceneName = "MainGame";
     [SerializeField] private float fadeDuration = 1.0f;
+    
+    [Tooltip("タイトルが消え切ってからダイアログが表示されるまでの待ち時間（秒）")]
+    [SerializeField] private float waitBeforeDialog = 0.5f;
+    
     [SerializeField] private string dialogMessage = "そろそろ帰ろう...";
 
     private enum State
@@ -24,7 +28,6 @@ public class TitleSceneChanger : MonoBehaviour
 
     private void Start()
     {
-        // OnEnableではなくStartでInstanceを呼び出し、確実に登録する
         if (ButtonHandler.Instance != null)
         {
             ButtonHandler.Instance.OnButtonClicked += OnButtonClicked;
@@ -35,6 +38,7 @@ public class TitleSceneChanger : MonoBehaviour
     {
         if (ButtonHandler.HasInstance)
         {
+            // -= OnDestroy から -= OnButtonClicked に修正
             ButtonHandler.Instance.OnButtonClicked -= OnButtonClicked;
         }
     }
@@ -49,7 +53,12 @@ public class TitleSceneChanger : MonoBehaviour
 
             case State.WaitingForDialogClick:
                 currentState = State.ChangingScene;
-                
+
+                if (dialogManager != null)
+                {
+                    dialogManager.CloseDialog();
+                }
+
                 if (FadeManager.Instance != null)
                 {
                     FadeManager.Instance.FadeToScene(nextSceneName);
@@ -62,6 +71,7 @@ public class TitleSceneChanger : MonoBehaviour
     {
         currentState = State.FadingTitleCanvas;
 
+        // 1. タイトルUIをフェードアウト
         if (titleCanvasGroup != null)
         {
             float startAlpha = titleCanvasGroup.alpha;
@@ -79,9 +89,16 @@ public class TitleSceneChanger : MonoBehaviour
             titleCanvasGroup.interactable = false;
         }
 
-        if (dialogController != null)
+        // 2. 消え切ってからの間（ウエイト時間）を確保
+        if (waitBeforeDialog > 0f)
         {
-            dialogController.OpenDialog(dialogMessage);
+            yield return new WaitForSeconds(waitBeforeDialog);
+        }
+
+        // 3. ダイアログを表示
+        if (dialogManager != null)
+        {
+            dialogManager.OpenDialog(dialogMessage);
         }
 
         currentState = State.WaitingForDialogClick;
