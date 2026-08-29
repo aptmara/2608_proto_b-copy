@@ -205,13 +205,14 @@ GameObject:
   - component: {fileID: 1562509657750852882}
   - component: {fileID: 3865242167809762082}
   - component: {fileID: 4212513023753074849}
+  - component: {fileID: 7389786316231508400}
   m_Layer: 5
-  m_Name: UIDialogController
+  m_Name: UIDialogManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &207302404529505458
 RectTransform:
   m_ObjectHideFlags: 0
@@ -309,8 +310,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIDialogController
   dialogText: {fileID: 3239702997095247292}
-  closeButton: {fileID: 0}
-  dialogRoot: {fileID: 8800583288473677027}
+  dialogCanvasGroup: {fileID: 0}
+  fadeDuration: 0.3
+--- !u!225 &7389786316231508400
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8800583288473677027}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8968707713809348043
 GameObject:
   m_ObjectHideFlags: 0

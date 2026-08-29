@@ -2,25 +2,26 @@ using UnityEngine;
 
 public class TestScriptsNoguchi : MonoBehaviour
 {
-    [SerializeField] private UIDialogController dialogController;
+    [SerializeField] private UIDialogManager dialogController;
 
     private void Start()
     {
         if (dialogController == null)
         {
-            dialogController = FindFirstObjectByType<UIDialogController>();
+            dialogController = FindFirstObjectByType<UIDialogManager>(FindObjectsInactive.Include);
         }
     }
 
     private void Update()
     {
-        // Spaceキーでシーン移動
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            FadeManager.Instance.FadeToScene("Title");
+            if (FadeManager.Instance != null)
+            {
+                FadeManager.Instance.FadeToScene("Title");
+            }
         }
 
-        // Tキーでダイアログ表示（デバッグ用）
         if (Input.GetKeyDown(KeyCode.T))
         {
             if (dialogController != null)
@@ -29,7 +30,7 @@ public class TestScriptsNoguchi : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("[TestScriptsNoguchi] UIDialogController が見つかりません。");
+                Debug.LogWarning("[TestScriptsNoguchi] UIDialogManager が見つかりません。Inspectorで割当を確認してください。");
             }
         }
     }
