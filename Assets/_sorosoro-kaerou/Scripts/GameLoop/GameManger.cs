@@ -241,6 +241,7 @@ public sealed class GameManager : MonoBehaviour
 
         GameEvents.RaiseSoundPlayed(def.kind);
         GameEvents.RaiseJudgeWindowOpened(config.judgeWindowDuration);
+        GameEvents.RaiseGhostAppeared();
     }
 
     // ---------------------------------------------------------------
@@ -324,12 +325,13 @@ public sealed class GameManager : MonoBehaviour
         float hold = ctx.didShutter ? balance.stagingWaitTime : 0f;
         if (result == JudgeResult.Wasted) hold = Mathf.Max(hold, balance.wastedStunTime);
 
-        // 撮影した全ケースで発火し、幽霊が写っていなければnullを渡す。
+        // 撮影した全ケース（Repelled/Wasted問わず）で発火し、正体画像を渡す。
+        // 環境音で個別画像が未設定の場合はnull（「何も写っていなかった」の表現）。
         // 停止するケースと1:1にしてあるため、UI側は「来たら出す、消えたら止まりが明ける」だけで済む。
         // state.ClearCurrentEvent()より前に呼ぶ必要がある（PickGhostSpriteがCurrentEventを参照するため）。
         if (ctx.didShutter)
         {
-            GameEvents.RaisePhotoCaptured(result == JudgeResult.Repelled ? PickGhostSprite() : null);
+            GameEvents.RaisePhotoCaptured(PickGhostSprite());
             StopSound();
         }
 
@@ -338,15 +340,18 @@ public sealed class GameManager : MonoBehaviour
     }
 
     // ---------------------------------------------------------------
-    // 撮影された幽霊画像の決定
+    // 撮影された正体画像の決定
     // ---------------------------------------------------------------
-    // SoundEventDefinitionに指定があればそれを優先し、無ければプールから抽選する。
+    // SoundEventDefinitionに指定があればそれを優先し、無ければ怪異のときだけプールから抽選する。
     // これにより「今はランダム、後から特定の音に画像を紐づけたい」がコード変更なしで切り替わる。
+    // 環境音でghostSprite未設定の場合はプールを使わずnullを返す（Wastedで幽霊が写るのは矛盾するため）。
     // 抽選に UnityEngine.Random ではなく既存の System.Random を使うのは、音イベントと乱数源を揃えるため。
     Sprite PickGhostSprite()
     {
         var def = state.CurrentEvent;
-        if (def != null && def.ghostSprite != null) return def.ghostSprite;
+        if (def == null) return null;
+        if (def.ghostSprite != null) return def.ghostSprite;
+        if (def.kind != SoundKind.Anomaly) return null;
 
         var pool = balance.fallbackGhostSprites;
         if (pool == null || pool.Length == 0) return null;

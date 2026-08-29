@@ -1,4 +1,5 @@
 using System.Collections;
+using SoroSoro.Events;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
@@ -16,12 +17,17 @@ namespace SorosoroKaerou
         [SerializeField] private float lightAlpha = 0.3f;
         [SerializeField] private float flashDuration = 0.1f;
 
+        private bool isLightOn;
+
         public void SetLight(bool on)
         {
             if (overlayImage == null) return;
             Color color = overlayImage.color;
             color.a = on ? lightAlpha : 0f;
             overlayImage.color = color;
+
+            isLightOn = on;
+            GameEvents.RaiseLightOnChanged(on);
         }
 
         public void Flash()
@@ -40,10 +46,13 @@ namespace SorosoroKaerou
 
             Color originalColor = overlayImage.color;
             overlayImage.color = Color.white;
+            GameEvents.RaiseLightOnChanged(true);
 
             yield return new WaitForSeconds(flashDuration);
 
             overlayImage.color = originalColor;
+            // フラッシュ終了後は、振り返り中ならON、そうでなければOFFの状態に戻す
+            GameEvents.RaiseLightOnChanged(isLightOn);
         }
     }
 }

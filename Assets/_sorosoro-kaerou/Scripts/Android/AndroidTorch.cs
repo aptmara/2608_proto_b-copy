@@ -7,6 +7,9 @@ public class AndroidTorch : MonoBehaviour
     /// <summary>現在トーチがONかどうか。</summary>
     public bool IsOn { get; private set; }
 
+    /// <summary>撮影演出（点灯〜Instantiate〜消灯）の実行中かどうか。連打防止に使う。</summary>
+    public bool IsFlashing { get; private set; }
+
     // InstantiateするPrefab
     public GameObject spawnPrefab;
 
@@ -50,6 +53,8 @@ public class AndroidTorch : MonoBehaviour
 
     public void SetTorch(bool on)
     {
+        bool previous = IsOn;
+
 #if UNITY_ANDROID && !UNITY_EDITOR
         if (cameraManager == null || cameraId == null)
         {
@@ -65,11 +70,18 @@ public class AndroidTorch : MonoBehaviour
         catch (System.Exception e)
         {
             Debug.LogError($"[TorchController] setTorchModeの呼び出しに失敗しました: {e}");
+            return;
         }
 #else
         IsOn = on;
         Debug.Log($"[TorchController] (Editor/非Android) トーチ状態をシミュレート: {on}");
 #endif
+
+        // 端末ライトが実際に点灯/消灯した瞬間だけ通知する（画面の明るさ演出との連動用）。
+        if (IsOn != previous)
+        {
+            GameEvents.RaiseLightOnChanged(IsOn);
+        }
     }
 
     /// <summary>
@@ -80,11 +92,16 @@ public class AndroidTorch : MonoBehaviour
     /// </summary>
     public void FlashAndSpawn()
     {
+        // 演出中の連打で複数コルーチンが並走し、Instantiate/RaiseShutterRequestedが
+        // 多重発火するのを防ぐため、実行中は新規呼び出しを無視する。
+        if (IsFlashing) return;
         StartCoroutine(FlashAndSpawnCoroutine());
     }
 
     private System.Collections.IEnumerator FlashAndSpawnCoroutine()
     {
+        IsFlashing = true;
+
         // 0.7秒点灯
         SetTorch(true);
         yield return new WaitForSeconds(0.7f);
@@ -119,5 +136,7 @@ public class AndroidTorch : MonoBehaviour
 
         // 最後にトーチを消す
         SetTorch(false);
+
+        IsFlashing = false;
     }
 }

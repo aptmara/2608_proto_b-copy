@@ -52,12 +52,18 @@ namespace SoroSoro.Events
         
         // 撮影時の硬直(演出用)
         public static event Action OnStagingFinished;
-        
-        // 撮影が成立したときに発火。幽霊がいなければ null。
+
+        // 音イベント発火時（種別問わず）に発火。判定確定まで正体不明のまま近づいてくる演出の起点。
+        public static event Action OnGhostAppeared;
+
+        // 撮影が成立したときに発火。写っていなければ null（環境音で未設定の場合など）。
         public static event Action<Sprite> OnPhotoCaptured;
         
         // 歩き音
         public static event Action<bool> OnWalkingChanged;
+
+        // 端末ライト（トーチ）のON/OFF切り替え時。演出側で画面の明るさ表現に使う。
+        public static event Action<bool> OnLightOnChanged;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()
@@ -106,8 +112,12 @@ namespace SoroSoro.Events
 
         public static void RaiseStagingFinished() => OnStagingFinished?.Invoke();
 
+        public static void RaiseGhostAppeared() => OnGhostAppeared?.Invoke();
+
         public static void RaisePhotoCaptured(Sprite ghost) => OnPhotoCaptured?.Invoke(ghost);
 
         public static void RaiseWalkingChanged(bool walking) => OnWalkingChanged?.Invoke(walking);
+
+        public static void RaiseLightOnChanged(bool on) => OnLightOnChanged?.Invoke(on);
     }
 }
