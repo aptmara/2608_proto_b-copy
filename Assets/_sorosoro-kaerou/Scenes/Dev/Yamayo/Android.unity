@@ -694,83 +694,28 @@ RectTransform:
   m_AnchoredPosition: {x: 9, y: -226}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &862638033
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 862638035}
-  - component: {fileID: 862638034}
-  - component: {fileID: 862638037}
-  - component: {fileID: 862638038}
-  m_Layer: 0
-  m_Name: AndroidManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &862638034
+--- !u!114 &862638034 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 5166439643413292786, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+  m_PrefabInstance: {fileID: 7279010013464265934}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 862638033}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 309f508493c3f094280e2df49990add8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AndroidInput
-  cube: {fileID: 385783549}
-  rotationText: {fileID: 985912472}
-  directionText: {fileID: 735352003}
-  phoneAngle: {x: 0, y: 0, z: 0}
-  relativeZ: 0
-  isBack: 0
---- !u!4 &862638035
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 862638033}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: -0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &862638037
+--- !u!114 &862638038 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 7143276774802562, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+  m_PrefabInstance: {fileID: 7279010013464265934}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 862638033}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1fd59ff35872d74b9341eb14af8a816, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraPermission
---- !u!114 &862638038
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 862638033}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40e3ad120c788574c86e22f35df6269f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AndroidTorch
-  spawnPrefab: {fileID: 4874760033738049722, guid: f17a4389d6b27064ea25c09ad639b7db, type: 3}
 --- !u!1 &985912471
 GameObject:
   m_ObjectHideFlags: 0
@@ -1766,13 +1711,82 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2113408367}
   m_CullTransparentMesh: 1
+--- !u!1001 &7279010013464265934
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 621585241896916211, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      propertyPath: m_Name
+      value: AndroidManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 3516338278986634027, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3516338278986634027, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3516338278986634027, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3516338278986634027, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3516338278986634027, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3516338278986634027, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3516338278986634027, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3516338278986634027, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3516338278986634027, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3516338278986634027, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5166439643413292786, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      propertyPath: cube
+      value: 
+      objectReference: {fileID: 385783549}
+    - target: {fileID: 5166439643413292786, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      propertyPath: rotationText
+      value: 
+      objectReference: {fileID: 985912472}
+    - target: {fileID: 5166439643413292786, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      propertyPath: directionText
+      value: 
+      objectReference: {fileID: 735352003}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 514057396}
   - {fileID: 18953636}
-  - {fileID: 862638035}
   - {fileID: 385783553}
   - {fileID: 2090709888}
   - {fileID: 1654923455}
+  - {fileID: 7279010013464265934}
