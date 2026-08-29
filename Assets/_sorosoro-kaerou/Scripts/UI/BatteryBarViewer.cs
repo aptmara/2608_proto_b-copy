@@ -17,4 +17,9 @@ public class BatteryBarViewer : MonoBehaviour
     {
         
     }
+
+    void ChangeBarScale()
+    {
+        
+    }
 }
