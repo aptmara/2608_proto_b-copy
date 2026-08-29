@@ -33,7 +33,7 @@ public sealed class GameManager : MonoBehaviour
         state = new GameState();
         progress = new DayProgress();
         dayCounter = new DayCounter(dayConfigs);
-        soundPlayer = new SoundEventPlayer();
+        soundPlayer = new SoundEventPlayer(balance, new System.Random());
         judgeWindow = new JudgeWindow();
         
         // TODO: BatteryModelの初期化（GameBalanceConfigが必要）
