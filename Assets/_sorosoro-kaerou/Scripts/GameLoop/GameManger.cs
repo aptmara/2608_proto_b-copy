@@ -36,11 +36,18 @@ public sealed class GameManager : MonoBehaviour
 
     void Awake()
     {
+#if UNITY_ANDROID && !UNITY_EDITOR
+    // Android実機ではAndroidManagerから取得
+    input = AndroidManager.Instance as IPlayerInput;
+    feedback = AndroidManager.Instance as IFeedbackPresenter;
+#else
+        // Editor / その他の環境ではInspectorから取得
         input = inputSource as IPlayerInput;
         feedback = feedbackSource as IFeedbackPresenter;
+#endif
 
-        Debug.Assert(input != null, "inputSourceがIPlayerInputを実装していません", this);
-        Debug.Assert(feedback != null, "feedbackSourceがIFeedbackPresenterを実装していません", this);
+        Debug.Assert(input != null, "IPlayerInputが取得できません", this);
+        Debug.Assert(feedback != null, "IFeedbackPresenterが取得できません", this);
         Debug.Assert(balance != null, "GameBalanceConfigが未設定です", this);
         Debug.Assert(dayConfigs != null && dayConfigs.Length > 0, "DayConfigが未設定です", this);
 
