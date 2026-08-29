@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/_sorosoro-kaerou/Scenes/Dev/Noguchi/Player3D.unity
+    guid: 8fe3dc34b8230fa4b9f53c77f2ffcce8
+  - enabled: 1
     path: Assets/_sorosoro-kaerou/Scenes/CoreLogicTest.unity
     guid: 32437ffea457e9349aca084df6fd82f8
   - enabled: 1

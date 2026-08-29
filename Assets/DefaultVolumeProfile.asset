@@ -80,10 +80,10 @@ MonoBehaviour:
     m_Value: 0.9
   intensity:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
   scatter:
     m_OverrideState: 1
-    m_Value: 0.7
+    m_Value: 1
   clamp:
     m_OverrideState: 1
     m_Value: 65472
@@ -98,10 +98,10 @@ MonoBehaviour:
     m_Value: 0
   downscale:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
   maxIterations:
     m_OverrideState: 1
-    m_Value: 6
+    m_Value: 8
   dirtTexture:
     m_OverrideState: 1
     m_Value: {fileID: 0}
@@ -359,6 +359,48 @@ MonoBehaviour:
   chromaticAbberationIntensity:
     m_OverrideState: 1
     m_Value: 0.5
+--- !u!114 &-513210777096555997
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33ddc15e00c7ced44bd55d5679b2a584, type: 3}
+  m_Name: DarkRoomEffect
+  m_EditorClassIdentifier: Assembly-CSharp::DarkRoomEffect
+  active: 1
+  <displayName>k__BackingField: 
+  lightPosition:
+    <fieldHash>k__BackingField: 2104146616
+    m_OverrideState: 1
+    m_Value: {x: 0, y: 0, z: 0}
+  baseColor:
+    <fieldHash>k__BackingField: -1951470288
+    m_OverrideState: 1
+    m_Value:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+  lightColor:
+    <fieldHash>k__BackingField: -1712119896
+    m_OverrideState: 1
+    m_Value:
+      r: 1
+      g: 0.9
+      b: 0.7
+      a: 1
+  lightRadius:
+    <fieldHash>k__BackingField: -1472769504
+    m_OverrideState: 1
+    m_Value: 45
+  softness:
+    <fieldHash>k__BackingField: -1233419112
+    m_OverrideState: 1
+    m_Value: 3
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -391,6 +433,7 @@ MonoBehaviour:
   - {fileID: -8889806103793358362}
   - {fileID: 7542762432327035319}
   - {fileID: -8195891578171087477}
+  - {fileID: 6750683683128934764}
 --- !u!114 &1826625376191364221
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -565,6 +608,37 @@ MonoBehaviour:
   texture:
     m_OverrideState: 1
     m_Value: {fileID: 0}
+--- !u!114 &6750683683128934764
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdece6a33a25b4142b869b89aa4d4c14, type: 3}
+  m_Name: DarkRoomEffect
+  m_EditorClassIdentifier: Assembly-CSharp::DarkRoomEffect
+  active: 1
+  baseColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  lightColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 0.9, b: 0.7, a: 1}
+  lightRadius:
+    m_OverrideState: 1
+    m_Value: 45
+  softness:
+    m_OverrideState: 1
+    m_Value: 3
+  spotAngle:
+    m_OverrideState: 1
+    m_Value: 45
+  particleIntensity:
+    m_OverrideState: 1
+    m_Value: 0.05
 --- !u!114 &7542762432327035319
 MonoBehaviour:
   m_ObjectHideFlags: 3
