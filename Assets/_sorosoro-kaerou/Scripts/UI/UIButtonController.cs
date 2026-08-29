@@ -1,15 +1,26 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class UIButtonController : MonoBehaviour
 {
     [SerializeField] private Button targetButton;
+    
+    [Header("Button Event")]
+    [SerializeField] private UnityEvent onButtonClicked;
+
+    private void Awake()
+    {
+        if (targetButton == null)
+        {
+            targetButton = GetComponent<Button>() ?? FindFirstObjectByType<Button>();
+        }
+    }
 
     private void OnEnable()
     {
         if (targetButton != null)
         {
-            // ボタン押下時に関数を実行するよう登録
             targetButton.onClick.AddListener(OnButtonClicked);
         }
     }
@@ -18,16 +29,13 @@ public class UIButtonController : MonoBehaviour
     {
         if (targetButton != null)
         {
-            // メモリリーク防止のため登録解除
             targetButton.onClick.RemoveListener(OnButtonClicked);
         }
     }
 
-    /// <summary>
-    /// ボタンが押された時に実行される処理
-    /// </summary>
     private void OnButtonClicked()
     {
         Debug.Log("ボタンが押されました！");
+        onButtonClicked?.Invoke();
     }
 }

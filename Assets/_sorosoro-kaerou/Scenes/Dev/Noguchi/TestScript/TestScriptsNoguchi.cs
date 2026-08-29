@@ -2,18 +2,35 @@ using UnityEngine;
 
 public class TestScriptsNoguchi : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private UIDialogController dialogController;
+
+    private void Start()
     {
-        
+        if (dialogController == null)
+        {
+            dialogController = FindFirstObjectByType<UIDialogController>();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
+        // Spaceキーでシーン移動
         if (Input.GetKeyDown(KeyCode.Space))
         {
-        FadeManager.Instance.FadeToScene("Title");
+            FadeManager.Instance.FadeToScene("Title");
+        }
+
+        // Tキーでダイアログ表示（デバッグ用）
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            if (dialogController != null)
+            {
+                dialogController.OpenDialog("Tキーが押されました！\nボタンを押すと閉じます。");
+            }
+            else
+            {
+                Debug.LogWarning("[TestScriptsNoguchi] UIDialogController が見つかりません。");
+            }
         }
     }
 }
