@@ -7,6 +7,9 @@ namespace SoroSoro.Events
     /// UI層や各演出コンポーネントへゲーム状態の変化を一方向に通知するイベント集約クラス。
     /// C#標準の static event を採用しているため、UI層はGameManagerの実体を参照（DI）することなく、
     /// クラス名指定で直接イベントを購読・解除できます。
+    ///
+    /// 例外的に OnDayClearContinue だけはUI層→ロジック層への逆方向の通知です。
+    /// リザルト画面を閉じた事実をGameManagerへ伝えるためだけに使い、他の用途には使いません。
     /// </summary>
     public static class GameEvents
     {
@@ -34,13 +37,14 @@ namespace SoroSoro.Events
         // 進行度変化時（引数: 0.0〜1.0の正規化進行度）
         public static event Action<float> OnProgressChanged;
 
-        // 帰宅時（引数: リザルトデータ）
+        // 帰宅時（引数: その日単位のリザルトデータ）
         public static event Action<ResultData> OnDayCleared;
 
-        // ゲームオーバー時（引数: リザルトデータ）
+        // 日クリアリザルトを閉じた時（UI層→ロジック層への逆方向通知）
+        public static event Action OnDayClearContinue;
+
+        // ゲームオーバー時（引数: 累計のリザルトデータ）
         public static event Action<ResultData> OnGameOver;
-        
-        public static event System.Action OnDayClearContinue;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()
@@ -54,7 +58,11 @@ namespace SoroSoro.Events
             OnBatteryChanged = null;
             OnProgressChanged = null;
             OnDayCleared = null;
+            OnDayClearContinue = null;
             OnGameOver = null;
+
+            // Enter Play Mode Options でDomain Reloadを切っていると前回のPlayの値が残るため必ず戻す
+            lastRaisedBattery = -1f;
         }
 
         public static void RaiseDayStarted(int day) => OnDayStarted?.Invoke(day);
@@ -78,7 +86,6 @@ namespace SoroSoro.Events
 
         public static void RaiseProgressChanged(float normalized) => OnProgressChanged?.Invoke(normalized);
         public static void RaiseDayCleared(ResultData data) => OnDayCleared?.Invoke(data);
-        
         public static void RaiseDayClearContinue() => OnDayClearContinue?.Invoke();
         public static void RaiseGameOver(ResultData data) => OnGameOver?.Invoke(data);
     }
