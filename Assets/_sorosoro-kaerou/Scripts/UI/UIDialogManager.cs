@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events; // ★追加
 
 [RequireComponent(typeof(CanvasGroup))]
 public class UIDialogManager : MonoBehaviour
@@ -11,6 +12,9 @@ public class UIDialogManager : MonoBehaviour
 
     [Header("Fade Settings")]
     [SerializeField] private float fadeDuration = 0.3f;
+    
+    [Header("Events")] // ★追加
+    public UnityEvent OnClosedComplete; // ★追加: 閉じ終わった時のイベント
 
     private Coroutine fadeCoroutine;
     private bool isOpen = false;
@@ -23,35 +27,18 @@ public class UIDialogManager : MonoBehaviour
         {
             dialogCanvasGroup = GetComponent<CanvasGroup>();
         }
-
         SetDialogStateImmediate(false);
     }
 
-    /// <summary>
-    /// メッセージを指定してダイアログをフェードイン表示
-    /// </summary>
     public void OpenDialog(string message)
     {
-        if (dialogText != null)
-        {
-            dialogText.text = message;
-        }
-
+        if (dialogText != null) dialogText.text = message;
         isOpen = true;
         StartFade(1f, true);
     }
 
-    /// <summary>
-    /// 引数なしでダイアログをフェードイン表示
-    /// </summary>
-    public void OpenDialog()
-    {
-        OpenDialog("ダイアログが表示されました。");
-    }
+    public void OpenDialog() => OpenDialog("ダイアログが表示されました。");
 
-    /// <summary>
-    /// ダイアログをフェードアウト非表示（ButtonのOnClickから直接呼び出し）
-    /// </summary>
     public void CloseDialog()
     {
         isOpen = false;
@@ -66,11 +53,7 @@ public class UIDialogManager : MonoBehaviour
             return;
         }
 
-        if (fadeCoroutine != null)
-        {
-            StopCoroutine(fadeCoroutine);
-        }
-
+        if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
         fadeCoroutine = StartCoroutine(FadeRoutine(targetAlpha, interactable));
     }
 
@@ -100,18 +83,17 @@ public class UIDialogManager : MonoBehaviour
         {
             dialogCanvasGroup.blocksRaycasts = false;
             dialogCanvasGroup.interactable = false;
+            
+            // ★追加: フェードアウトが完全に終わったらイベントを発行
+            OnClosedComplete?.Invoke(); 
         }
 
         fadeCoroutine = null;
     }
 
-    /// <summary>
-    /// アニメーションなしで即座に状態を切り替えます
-    /// </summary>
     public void SetDialogStateImmediate(bool visible)
     {
         if (dialogCanvasGroup == null) return;
-
         isOpen = visible;
         dialogCanvasGroup.alpha = visible ? 1f : 0f;
         dialogCanvasGroup.blocksRaycasts = visible;
