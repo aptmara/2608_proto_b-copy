@@ -85,7 +85,12 @@ public sealed class GameManager : MonoBehaviour
             : new RandomSequencer(config, random);
 
         soundPlayer.SetSequencer(sequencer);
-        state.SetPhase(config.day == 0 ? PhaseKind.Day0 : PhaseKind.Walking);
+
+        // Day0かどうかでPhaseを分岐させない。
+        // GameManagerが持つDay0固有の分岐はDayConfigの2フラグ（allowGameOver / countScore）だけに限定する。
+        // PhaseKind.Day0を使うと GameState.IsWalkingForward（Walking / Judgingのみ許可）から外れ、
+        // 進行度・音イベントのTickが一切進まなくなるため、ここではWalkingに統一する。
+        state.SetPhase(PhaseKind.Walking);
 
         GameEvents.RaiseDayStarted(config.day);
         GameEvents.RaiseBatteryChanged(battery.Normalized);
