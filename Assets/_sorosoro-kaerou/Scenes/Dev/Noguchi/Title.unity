@@ -277,7 +277,7 @@ PrefabInstance:
     - target: {fileID: 8904782473503332492, guid: 1243445c1af7a6b4a830ec35902f67c1, type: 3}
       propertyPath: targetButton
       value: 
-      objectReference: {fileID: 88223110286374639}
+      objectReference: {fileID: 1469127104}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -836,6 +836,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1469127104 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6467646026223534535, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
+  m_PrefabInstance: {fileID: 88223110286374637}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1 &1527935585
 GameObject:
   m_ObjectHideFlags: 0
@@ -1069,17 +1080,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6884728386458180863, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
   m_PrefabInstance: {fileID: 88223110286374637}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &88223110286374639 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7609370916645565072, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
-  m_PrefabInstance: {fileID: 88223110286374637}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
