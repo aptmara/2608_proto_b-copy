@@ -1,5 +1,6 @@
-using UnityEngine;
+using SorosoroKaerou;
 using TMPro;
+using UnityEngine;
 
 public class PhoneGyro : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class PhoneGyro : MonoBehaviour
     [Header("TMP")]
     [SerializeField] private TMP_Text rotationText;
     [SerializeField] private TMP_Text directionText;
+    [SerializeField] private TMP_Text feedbackText;
 
     // スマホの生の角度
     public Vector3 phoneAngle;
@@ -23,6 +25,9 @@ public class PhoneGyro : MonoBehaviour
 
     // 反対方向を向いているか
     public bool isBack;
+
+    // フィードバック用のインターフェース
+    private IFeedbackPresenter feedback;
 
 
     void Start()
@@ -86,9 +91,33 @@ public class PhoneGyro : MonoBehaviour
         // 前 / 後ろ判定
         // =========================
 
-        // 90～270度ならTRUE
-        isBack = relativeZ >= 90f && relativeZ <= 270f;
+        if(!isBack)
+        {
+            if ( 135 < relativeZ && relativeZ < 225)
+            {
+                isBack = true;
+            }
+        }
+        else
+        {
+            if (315 < relativeZ || relativeZ < 45)
+            {
+                isBack = false;
+                if (feedback.IsLightOn)
+                    feedback.SetLight(false);
+            }
+        }
 
+        if (isBack)
+        {
+            feedback = AndroidManager.Instance.Feedback;
+            if (feedback != null)
+            {
+                if(!feedback.IsLightOn)
+                    feedback.SetLight(true);
+                feedback.Vibrate();
+            }
+        }
 
         // =========================
         // TMP：ローテーション表示
@@ -97,11 +126,10 @@ public class PhoneGyro : MonoBehaviour
         if (rotationText != null)
         {
             rotationText.text =
-                $"Rotation\n" +
-                $"X : {phoneAngle.x:F1}°\n" +
-                $"Y : {relativeZ:F1}°\n" +
                 $"Z : {phoneAngle.z:F1}°\n" +
-                $"Z Offset : {ZOffset:F1}°";
+                $"Z Offset : {ZOffset:F1}°\n" +
+                $"Relative Z : {relativeZ:F1}°"
+                ;
         }
 
 
@@ -114,7 +142,6 @@ public class PhoneGyro : MonoBehaviour
             directionText.text =
                 $"反対向き : {isBack.ToString().ToUpper()}";
         }
-
 
         // =========================
         // Cubeをスマホと同じ向きにする
