@@ -23,8 +23,15 @@ public sealed class GameBalanceConfig : ScriptableObject
 
     [Tooltip("日の終了数秒前は新規イベントを発生させないための禁止時間（秒）")]
     public float noEventBeforeEnd = 3f;
+    
+    [Header("演出")]
+    [Tooltip("撮影後、演出を見せるために進行を停止する時間（秒）。0にすると演出待機は完全に無効化され、導入前と同じ挙動に戻る")]
+    public float stagingWaitTime = 1.2f;
 
     [Header("ペナルティ")]
     [Tooltip("環境音に対して空振り撮影した際の硬直時間（秒）")]
     public float wastedStunTime = 0.4f;
+    
+    [Header("幽霊抽選プール")]
+    public Sprite[] fallbackGhostSprites;
 }

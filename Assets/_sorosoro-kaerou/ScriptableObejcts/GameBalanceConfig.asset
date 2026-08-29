@@ -13,9 +13,16 @@ MonoBehaviour:
   m_Name: GameBalanceConfig
   m_EditorClassIdentifier: Assembly-CSharp::GameBalanceConfig
   batteryCapacity: 100
-  lightDrainPerSecond: 8
-  flashCost: 15
+  lightDrainPerSecond: 4
+  flashCost: 12
   eventCooldownMin: 4
-  eventCooldownMax: 8
+  eventCooldownMax: 7
   noEventBeforeEnd: 3
+  stagingWaitTime: 3
   wastedStunTime: 0.4
+  fallbackGhostSprites:
+  - {fileID: 21300000, guid: cdc4dfd5d2d17424c8afbe3f304ec45e, type: 3}
+  - {fileID: 21300000, guid: a63bfd63da55aaa4da899be34b2ee204, type: 3}
+  - {fileID: 21300000, guid: 5186df713e046d74887e74d84ea2fd91, type: 3}
+  - {fileID: 21300000, guid: ddbb7a819f1071442b512cd5860116ad, type: 3}
+  - {fileID: 21300000, guid: 7b0c2cfcb8f7c904690642aa344dbb23, type: 3}
