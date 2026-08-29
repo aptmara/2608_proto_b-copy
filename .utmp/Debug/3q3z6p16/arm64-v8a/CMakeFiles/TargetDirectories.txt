@@ -1,0 +1,5 @@
+C:/Users/kapi0/2608_proto_b/.utmp/Debug/3q3z6p16/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/kapi0/2608_proto_b/.utmp/Debug/3q3z6p16/arm64-v8a/CMakeFiles/rebuild_cache.dir
+C:/Users/kapi0/2608_proto_b/.utmp/Debug/3q3z6p16/arm64-v8a/FramePacing/CMakeFiles/swappywrapper.dir
+C:/Users/kapi0/2608_proto_b/.utmp/Debug/3q3z6p16/arm64-v8a/FramePacing/CMakeFiles/edit_cache.dir
+C:/Users/kapi0/2608_proto_b/.utmp/Debug/3q3z6p16/arm64-v8a/FramePacing/CMakeFiles/rebuild_cache.dir
