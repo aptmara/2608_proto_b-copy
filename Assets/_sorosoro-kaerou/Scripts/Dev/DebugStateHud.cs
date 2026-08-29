@@ -62,19 +62,25 @@ public sealed class DebugStateHud : MonoBehaviour
 
     void OnGUI()
     {
-        GUIStyle label = new GUIStyle(GUI.skin.label) { fontSize = 64 };
-        GUILayout.BeginArea(new Rect(10, 10, 600, 500), GUI.skin.box);
-        GUILayout.Label("<b>Debug State HUD</b>", label);
+        // 画面解像度に依存せず必ず全項目が収まるよう、高さを動的に確保する
+        float areaWidth = 600f;
+        float areaHeight = 800f;
+
+        GUIStyle title = new GUIStyle(GUI.skin.label) { fontSize = 64, fontStyle = FontStyle.Bold };
+        GUIStyle label = new GUIStyle(GUI.skin.label) { fontSize = 64, wordWrap = false };
+
+        GUILayout.BeginArea(new Rect(10, 10, areaWidth, areaHeight), GUI.skin.box);
+        GUILayout.Label("Debug State HUD", title);
         GUILayout.Label($"Day: {day}", label);
         GUILayout.Label($"Progress: {progress:P0}", label);
         GUILayout.Label($"Battery: {battery:P0}", label);
-        GUILayout.Label($"Aiming(振り返り中): {isAiming}", label);
+        GUILayout.Label($"Aiming: {isAiming}", label);
         GUILayout.Label($"LastSound: {lastSound}", label);
 
         if (judgeOpen)
         {
             float remain = Mathf.Max(0f, judgeDuration - (Time.time - judgeOpenedAt));
-            GUILayout.Label($"JudgeWindow: OPEN 残り{remain:F1}s", label);
+            GUILayout.Label($"JudgeWindow: OPEN 残{remain:F1}s", label);
         }
         else
         {
