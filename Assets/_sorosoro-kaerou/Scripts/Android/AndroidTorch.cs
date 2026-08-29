@@ -1,3 +1,4 @@
+using SoroSoro.Events;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -104,7 +105,7 @@ public class AndroidTorch : MonoBehaviour
                 transform.rotation
             );
 
-            GetComponent<AndroidPlayerInput>()?.TriggerShutter();
+            GameEvents.RaiseShutterRequested();
 
             // 3秒後にこのオブジェクトを削除
             Destroy(obj, 3f);

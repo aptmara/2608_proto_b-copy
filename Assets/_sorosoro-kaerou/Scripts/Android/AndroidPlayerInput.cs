@@ -1,4 +1,5 @@
 using SorosoroKaerou;
+using SoroSoro.Events;
 using UnityEngine;
 
 public class AndroidPlayerInput : MonoBehaviour, IPlayerInput
@@ -17,13 +18,23 @@ public class AndroidPlayerInput : MonoBehaviour, IPlayerInput
         torch = GetComponent<AndroidTorch>();
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        // 毎フレームリセット
+        GameEvents.OnShutterRequested += TriggerShutter;
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.OnShutterRequested -= TriggerShutter;
+    }
+
+    // 読み取った側（GameManager）が明示的に呼ぶ。毎フレーム自動リセットしない。
+    public void ConsumeShutter()
+    {
         ShutterDown = false;
     }
 
-    public void TriggerShutter()
+    private void TriggerShutter()
     {
         ShutterDown = true;
     }

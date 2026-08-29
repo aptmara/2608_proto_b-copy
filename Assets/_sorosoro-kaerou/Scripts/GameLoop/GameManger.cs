@@ -148,6 +148,12 @@ public sealed class GameManager : MonoBehaviour
         // 1. 入力を読む
         state.SyncInput(input);
 
+        // ShutterDownはウィンドウの開閉に関わらず毎フレーム読み切って即消費する。
+        // HandleJudgingの中だけで読むと、ウィンドウが閉じている間に来た入力が
+        // 消費されずに残り、次のウィンドウで誤検出されるため。
+        bool shutterDown = input.ShutterDown;
+        if (shutterDown) input.ConsumeShutter();
+
         // 2. 電池を減らす（ライト制御より先）
         // 撮影後の停止中は減らさない。プレイヤーが操作している時間ではないため。
         if (state.IsTurnedBack && !battery.IsEmpty && !isHolding)
@@ -183,7 +189,7 @@ public sealed class GameManager : MonoBehaviour
         // 6. 判定処理またはイベント発火
         if (judgeWindow.IsOpen)
         {
-            HandleJudging();
+            HandleJudging(shutterDown);
         }
         else if (soundPlayer.CanFire(RemainToDayEnd()))
         {
@@ -240,10 +246,10 @@ public sealed class GameManager : MonoBehaviour
     // ---------------------------------------------------------------
     // 判定受付中の処理（4象限の入口）
     // ---------------------------------------------------------------
-    void HandleJudging()
+    void HandleJudging(bool shutterDown)
     {
         // シャッターはウィンドウが開いている間だけ拾う
-        if (input.ShutterDown)
+        if (shutterDown)
         {
             bool flashSucceeded = battery.TryConsumeFlash();
             feedback.Flash();

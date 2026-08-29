@@ -5,6 +5,7 @@ public class AndroidManager : Singleton<AndroidManager>
 {
     public IPlayerInput PlayerInput { get; private set; }
     public IFeedbackPresenter Feedback { get; private set; }
+    public AndroidTorch Torch { get; private set; }
 
     protected override void Awake()
     {
@@ -12,5 +13,6 @@ public class AndroidManager : Singleton<AndroidManager>
 
         PlayerInput = GetComponent<AndroidPlayerInput>();
         Feedback = GetComponent<AndroidFeedbackPresenter>();
+        Torch = GetComponent<AndroidTorch>();
     }
 }
