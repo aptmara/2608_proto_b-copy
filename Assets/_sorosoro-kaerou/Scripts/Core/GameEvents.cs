@@ -45,6 +45,15 @@ namespace SoroSoro.Events
 
         // ゲームオーバー時（引数: 累計のリザルトデータ）
         public static event Action<ResultData> OnGameOver;
+        
+        // 撮影時の硬直(演出用)
+        public static event Action OnStagingFinished;
+        
+        // 撮影が成立したときに発火。幽霊がいなければ null。
+        public static event Action<Sprite> OnPhotoCaptured;
+        
+        // 歩き音
+        public static event Action<bool> OnWalkingChanged;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()
@@ -88,5 +97,11 @@ namespace SoroSoro.Events
         public static void RaiseDayCleared(ResultData data) => OnDayCleared?.Invoke(data);
         public static void RaiseDayClearContinue() => OnDayClearContinue?.Invoke();
         public static void RaiseGameOver(ResultData data) => OnGameOver?.Invoke(data);
+        
+        public static void RaiseStagingFinished() => OnStagingFinished?.Invoke();
+        
+        public static void RaisePhotoCaptured(Sprite ghost) => OnPhotoCaptured?.Invoke(ghost);
+        
+        public static void RaiseWalkingChanged(bool walking) => OnWalkingChanged?.Invoke(walking);
     }
 }

@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6d07fc6478087e8428a4a133f282610d, type: 3}
-  m_Name: Day1Config
+  m_Name: Day3Config
   m_EditorClassIdentifier: Assembly-CSharp::DayConfig
   day: 1
-  requiredWalkSeconds: 55
-  eventCount: 6
-  anomalyRatio: 0.33
-  judgeWindowDuration: 4
+  requiredWalkSeconds: 65
+  eventCount: 8
+  anomalyRatio: 0.375
+  judgeWindowDuration: 3.2
   allowGameOver: 1
   countScore: 1
   fixedSequence: []
