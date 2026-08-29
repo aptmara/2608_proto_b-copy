@@ -1,29 +1,18 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class UIDialogController : MonoBehaviour
 {
     [Header("UI Components")]
     [SerializeField] private TMP_Text dialogText;
-    [SerializeField] private Button closeButton;
 
     [Header("Dialog Target")]
     [Tooltip("表示・非表示を切り替えるオブジェクト（未設定の場合はこのGameObject自身）")]
-    [SerializeField] private GameObject dialogRoot;
+     private GameObject dialogRoot;
 
     private void Awake()
     {
-        if (dialogRoot == null)
-        {
-            dialogRoot = gameObject;
-        }
-
-        // シーン内に1つあるボタンを自動取得（インスペクター未設定時）
-        if (closeButton == null)
-        {
-            closeButton = FindFirstObjectByType<Button>();
-        }
+        dialogRoot = gameObject;
 
         // 初期状態は非表示
         CloseDialog();
@@ -31,17 +20,36 @@ public class UIDialogController : MonoBehaviour
 
     private void OnEnable()
     {
-        if (closeButton != null)
+        // ButtonHandlerのクリックイベントを購読
+        if (ButtonHandler.HasInstance)
         {
-            closeButton.onClick.AddListener(CloseDialog);
+            ButtonHandler.Instance.OnButtonClicked += OnTargetButtonClicked;
         }
     }
 
     private void OnDisable()
     {
-        if (closeButton != null)
+        // イベント解除
+        if (ButtonHandler.HasInstance)
         {
-            closeButton.onClick.RemoveListener(CloseDialog);
+            ButtonHandler.Instance.OnButtonClicked -= OnTargetButtonClicked;
+        }
+    }
+
+    /// <summary>
+    /// ButtonHandler経由でボタンが押された時の処理
+    /// </summary>
+    private void OnTargetButtonClicked()
+    {
+        // ボタンが押された時の動作（例: ダイアログを開く / 閉じる）
+        // 必要に応じて処理を変更してください
+        if (dialogRoot != null && dialogRoot.activeSelf)
+        {
+            CloseDialog();
+        }
+        else
+        {
+            OpenDialog();
         }
     }
 
