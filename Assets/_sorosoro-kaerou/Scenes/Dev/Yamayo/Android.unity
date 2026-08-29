@@ -694,12 +694,17 @@ RectTransform:
   m_AnchoredPosition: {x: 9, y: -226}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &862638033 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 621585241896916211, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+  m_PrefabInstance: {fileID: 7279010013464265934}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &862638034 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5166439643413292786, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
   m_PrefabInstance: {fileID: 7279010013464265934}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 862638033}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 309f508493c3f094280e2df49990add8, type: 3}
@@ -710,12 +715,36 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7143276774802562, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
   m_PrefabInstance: {fileID: 7279010013464265934}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 862638033}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40e3ad120c788574c86e22f35df6269f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AndroidTorch
+--- !u!114 &862638039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 862638033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a29f4ef04fd609a408015a13f7018ed2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AndroidPlayerInput
+--- !u!114 &862638040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 862638033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bb91345577c9f74da3d26565ef12441, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AndroidFeedbackPresenter
 --- !u!1 &985912471
 GameObject:
   m_ObjectHideFlags: 0
@@ -1778,7 +1807,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 621585241896916211, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 862638040}
+    - targetCorrespondingSourceObject: {fileID: 621585241896916211, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 862638039}
   m_SourcePrefab: {fileID: 100100000, guid: 6906b7b27b88fce49837df5041a8311a, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
