@@ -16,6 +16,4 @@ public sealed class SoundEventDefinition : ScriptableObject
     [Tooltip("再生ピッチ")]
     [Range(0.5f, 2f)]
     public float pitch = 1f;
-    
-    public Sprite ghostSprite;
 }

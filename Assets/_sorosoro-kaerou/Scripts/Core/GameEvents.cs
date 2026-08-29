@@ -8,8 +8,9 @@ namespace SoroSoro.Events
     /// C#標準の static event を採用しているため、UI層はGameManagerの実体を参照（DI）することなく、
     /// クラス名指定で直接イベントを購読・解除できます。
     ///
-    /// 例外的に OnDayClearContinue だけはUI層→ロジック層への逆方向の通知です。
-    /// リザルト画面を閉じた事実をGameManagerへ伝えるためだけに使い、他の用途には使いません。
+    /// 例外的に OnDayClearContinue と OnShutterRequested だけはUI層→ロジック層への逆方向の通知です。
+    /// OnDayClearContinueはリザルト画面を閉じた事実を、OnShutterRequestedはシャッター演出内の
+    /// 撮影確定タイミングをGameManagerへ伝えるためだけに使い、他の用途には使いません。
     /// </summary>
     public static class GameEvents
     {
@@ -43,17 +44,11 @@ namespace SoroSoro.Events
         // 日クリアリザルトを閉じた時（UI層→ロジック層への逆方向通知）
         public static event Action OnDayClearContinue;
 
+        // シャッター演出内で撮影が確定した時（UI層→ロジック層への逆方向通知）
+        public static event Action OnShutterRequested;
+
         // ゲームオーバー時（引数: 累計のリザルトデータ）
         public static event Action<ResultData> OnGameOver;
-        
-        // 撮影時の硬直(演出用)
-        public static event Action OnStagingFinished;
-        
-        // 撮影が成立したときに発火。幽霊がいなければ null。
-        public static event Action<Sprite> OnPhotoCaptured;
-        
-        // 歩き音
-        public static event Action<bool> OnWalkingChanged;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()
@@ -69,6 +64,7 @@ namespace SoroSoro.Events
             OnDayCleared = null;
             OnDayClearContinue = null;
             OnGameOver = null;
+            OnShutterRequested = null;
 
             // Enter Play Mode Options でDomain Reloadを切っていると前回のPlayの値が残るため必ず戻す
             lastRaisedBattery = -1f;
@@ -97,11 +93,6 @@ namespace SoroSoro.Events
         public static void RaiseDayCleared(ResultData data) => OnDayCleared?.Invoke(data);
         public static void RaiseDayClearContinue() => OnDayClearContinue?.Invoke();
         public static void RaiseGameOver(ResultData data) => OnGameOver?.Invoke(data);
-        
-        public static void RaiseStagingFinished() => OnStagingFinished?.Invoke();
-        
-        public static void RaisePhotoCaptured(Sprite ghost) => OnPhotoCaptured?.Invoke(ghost);
-        
-        public static void RaiseWalkingChanged(bool walking) => OnWalkingChanged?.Invoke(walking);
+        public static void RaiseShutterRequested() => OnShutterRequested?.Invoke();
     }
 }

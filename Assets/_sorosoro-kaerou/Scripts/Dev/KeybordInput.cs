@@ -17,6 +17,9 @@ namespace SorosoroKaerou
 
         public bool ShutterDown => Input.GetKeyDown(KeyCode.Z);
 
+        // Input.GetKeyDownはUnity側で1フレームのみtrueになる保証があるため何もしない
+        public void ConsumeShutter() { }
+
         private void Update()
         {
             float targetAxis = IsTurnedBack ? 1.0f : 0.0f;

@@ -19,6 +19,8 @@ namespace SorosoroKaerou
         [SerializeField] private float bobHeight = 0.03f;
         [SerializeField] private float bobSpeed = 6f;
 
+        private const float ZResetThreshold = 175.86f;
+
         private IPlayerInput input;
         private IFeedbackPresenter feedback;
         private float bobTimer;
@@ -69,6 +71,13 @@ namespace SorosoroKaerou
             bobTimer += Time.deltaTime * bobSpeed;
             Vector3 pos = transform.localPosition;
             pos.y = baseLocalY + Mathf.Abs(Mathf.Sin(bobTimer)) * bobHeight;
+
+            // Zが一定距離まで進んだらループさせるため0に戻す
+            if (pos.z >= ZResetThreshold)
+            {
+                pos.z = 0f;
+            }
+
             transform.localPosition = pos;
         }
     }

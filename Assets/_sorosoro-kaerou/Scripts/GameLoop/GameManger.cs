@@ -33,13 +33,8 @@ public sealed class GameManager : MonoBehaviour
     bool wasTurnedBack;
 
     // 空振り硬直
-    // 撮影後の停止（演出待機 兼 空振り硬直）
-    // balance.stagingWaitTime を0にすれば演出待機分は消え、従来の空振り硬直だけが残る
-    float holdTimer;
-    bool isHolding => holdTimer > 0f;
-
-    // 演出側・デバッグ表示から停止中かどうかを参照するための入口
-    public bool IsHolding => isHolding;
+    float stunTimer;
+    bool isStunned => stunTimer > 0f;
 
     bool waitingContinue;
 
@@ -58,16 +53,6 @@ public sealed class GameManager : MonoBehaviour
         soundPlayer = new SoundEventPlayer(balance, random);
         dayStats = new DayStats();
         totalStats = new DayStats();
-    }
-
-    void OnEnable()
-    {
-        GameEvents.OnStagingFinished += NotifyStagingFinished;
-    }
-
-    void OnDisable()
-    {
-        GameEvents.OnStagingFinished -= NotifyStagingFinished;
     }
 
     void Start()
@@ -97,7 +82,7 @@ public sealed class GameManager : MonoBehaviour
     {
         dayCounter.Reset();
         totalStats.Reset();
-        holdTimer = 0f;
+        stunTimer = 0f;
         BeginDay(dayCounter.CurrentConfig);
     }
 
@@ -110,7 +95,6 @@ public sealed class GameManager : MonoBehaviour
         if (config == null) return;
 
         battery.Refill();
-        holdTimer = 0f;
         dayStats.Reset();
         progress.Reset(config.requiredWalkSeconds);
         judgeWindow.Close();
@@ -148,9 +132,14 @@ public sealed class GameManager : MonoBehaviour
         // 1. 入力を読む
         state.SyncInput(input);
 
+        // ShutterDownはウィンドウの開閉に関わらず毎フレーム読み切って即消費する。
+        // HandleJudgingの中だけで読むと、ウィンドウが閉じている間に来た入力が
+        // 消費されずに残り、次のウィンドウで誤検出されるため。
+        bool shutterDown = input.ShutterDown;
+        if (shutterDown) input.ConsumeShutter();
+
         // 2. 電池を減らす（ライト制御より先）
-        // 撮影後の停止中は減らさない。プレイヤーが操作している時間ではないため。
-        if (state.IsTurnedBack && !battery.IsEmpty && !isHolding)
+        if (state.IsTurnedBack && !battery.IsEmpty)
         {
             battery.DrainLight(dt);
             GameEvents.RaiseBatteryChanged(battery.Normalized);
@@ -162,13 +151,15 @@ public sealed class GameManager : MonoBehaviour
         // 4. 振り返り開始・終了イベント
         UpdateAimEvents();
 
-        // 撮影後の停止中は歩行・判定・音イベントを進めない。
-        // ライト（3.）はこの手前で反映済みなので、停止中も点いたままになる。
-        // 暗転すると演出の写真が見えなくなるため、これは意図した例外。
-        if (isHolding)
+        // 空振り硬直中は歩行・判定を進めない
+        if (isStunned)
         {
-            holdTimer -= dt;
-            if (holdTimer <= 0f) EndHold();
+            stunTimer -= dt;
+            if (stunTimer <= 0f)
+            {
+                stunTimer = 0f;
+                state.SetPhase(PhaseKind.Walking);
+            }
             return;
         }
 
@@ -183,7 +174,7 @@ public sealed class GameManager : MonoBehaviour
         // 6. 判定処理またはイベント発火
         if (judgeWindow.IsOpen)
         {
-            HandleJudging();
+            HandleJudging(shutterDown);
         }
         else if (soundPlayer.CanFire(RemainToDayEnd()))
         {
@@ -240,10 +231,10 @@ public sealed class GameManager : MonoBehaviour
     // ---------------------------------------------------------------
     // 判定受付中の処理（4象限の入口）
     // ---------------------------------------------------------------
-    void HandleJudging()
+    void HandleJudging(bool shutterDown)
     {
         // シャッターはウィンドウが開いている間だけ拾う
-        if (input.ShutterDown)
+        if (shutterDown)
         {
             bool flashSucceeded = battery.TryConsumeFlash();
             feedback.Flash();
@@ -312,72 +303,17 @@ public sealed class GameManager : MonoBehaviour
             return;
         }
 
-        // 撮影したケース（Repelled / Wasted）だけ停止する。
-        // 「怪奇のときだけ止める」にしないのは、判定結果でロジックとUIの分岐を増やさず
-        // 「シャッターを押したら止まる」の1行でルールを閉じるため。
-        float hold = ctx.didShutter ? balance.stagingWaitTime : 0f;
-        if (result == JudgeResult.Wasted) hold = Mathf.Max(hold, balance.wastedStunTime);
-
-        // 撮影した全ケースで発火し、幽霊が写っていなければnullを渡す。
-        // 停止するケースと1:1にしてあるため、UI側は「来たら出す、消えたら止まりが明ける」だけで済む。
-        // state.ClearCurrentEvent()より前に呼ぶ必要がある（PickGhostSpriteがCurrentEventを参照するため）。
-        if (ctx.didShutter)
+        if (result == JudgeResult.Wasted)
         {
-            GameEvents.RaisePhotoCaptured(result == JudgeResult.Repelled ? PickGhostSprite() : null);
-            StopSound();
+            stunTimer = balance.wastedStunTime;
+            state.SetPhase(PhaseKind.Judging); // 硬直中は歩けない扱い
         }
-
-        BeginHold(hold);
-        state.ClearCurrentEvent();
-    }
-
-    // ---------------------------------------------------------------
-    // 撮影された幽霊画像の決定
-    // ---------------------------------------------------------------
-    // SoundEventDefinitionに指定があればそれを優先し、無ければプールから抽選する。
-    // これにより「今はランダム、後から特定の音に画像を紐づけたい」がコード変更なしで切り替わる。
-    // 抽選に UnityEngine.Random ではなく既存の System.Random を使うのは、音イベントと乱数源を揃えるため。
-    Sprite PickGhostSprite()
-    {
-        var def = state.CurrentEvent;
-        if (def != null && def.ghostSprite != null) return def.ghostSprite;
-
-        var pool = balance.fallbackGhostSprites;
-        if (pool == null || pool.Length == 0) return null;
-
-        return pool[random.Next(pool.Length)];
-    }
-
-    // ---------------------------------------------------------------
-    // 撮影後の停止
-    // ---------------------------------------------------------------
-    void BeginHold(float seconds)
-    {
-        // stagingWaitTime = 0 かつ空振りでない場合はここを通り、演出待機の導入前と同じ即時復帰になる
-        if (seconds <= 0f)
+        else
         {
             state.SetPhase(PhaseKind.Walking);
-            return;
         }
 
-        holdTimer = seconds;
-        state.SetPhase(PhaseKind.Judging); // 停止中は歩けない扱い
-    }
-
-    void EndHold()
-    {
-        holdTimer = 0f;
-        state.SetPhase(PhaseKind.Walking);
-    }
-
-    /// <summary>
-    /// 演出側から停止を打ち切るための入口。
-    /// 段階1では未使用だが、段階2でUIのフラグを繋ぐ際はここを呼ぶだけで済む。
-    /// 呼ばれなくても holdTimer の満了で必ず復帰するため、UI未実装でも進行は止まらない。
-    /// </summary>
-    public void NotifyStagingFinished()
-    {
-        if (isHolding) EndHold();
+        state.ClearCurrentEvent();
     }
 
     // ---------------------------------------------------------------
@@ -459,7 +395,7 @@ public sealed class GameManager : MonoBehaviour
         waitingContinue = false;
 
         wasTurnedBack = false;
-        holdTimer = 0f;
+        stunTimer = 0f;
         StartGame();
     }
 
