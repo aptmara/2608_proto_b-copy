@@ -1,0 +1,12 @@
+newmtl JPBM12Metal001Mat
+map_Kd -o 0 0 -s 1 1 Metal001_1K-PNG_Color.png
+map_Pm -o 0 0 -s 1 1 Metal001_1K-PNG_Metalness.png
+bump -o 0 0 -s 1 1 Metal001_1K-PNG_NormalGL.png
+Kd 0.6784314 0.6784314 0.6784314
+d 1
+
+newmtl JPBM12MosaicGlassMatOnlyN
+bump -o 0 0 -s 1 1 glass-texture-abstract-backgroundN.jpg
+Kd 0 0 0
+d 1
+

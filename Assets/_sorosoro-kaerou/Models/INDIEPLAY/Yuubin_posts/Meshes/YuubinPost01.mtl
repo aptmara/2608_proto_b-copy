@@ -1,0 +1,40 @@
+newmtl Metal036MatBlack
+map_Kd -o 0 0 -s 1 1 Metal036_1K-PNG_Color.png
+map_Pm -o 0 0 -s 1 1 Metal036_1K-PNG_Roughness.png
+bump -o 0 0 -s 1 1 Metal036_1K-PNG_NormalDX.png
+disp -o 0 0 -s 1 1 Metal036_1K-PNG_Displacement.png
+Kd 0 0 0
+d 1
+
+newmtl Metal036MatRed
+map_Kd -o 0 0 -s 1 1 Metal036_1K-PNG_Color.png
+map_Pm -o 0 0 -s 1 1 Metal036_1K-PNG_Roughness.png
+bump -o 0 0 -s 1 1 Metal036_1K-PNG_NormalDX.png
+disp -o 0 0 -s 1 1 Metal036_1K-PNG_Displacement.png
+Kd 1 0 0
+d 1
+
+newmtl Plastic013AMat
+map_Kd -o 0 0 -s 1 1 Plastic013A_1K-PNG_Color.png
+map_Pm -o 0 0 -s 1 1 Plastic013A_1K-PNG_Roughness.png
+bump -o 0 0 -s 1 1 Plastic013A_1K-PNG_NormalDX.png
+Kd 0.7735849 0.7735849 0.7735849
+d 1
+
+newmtl Metal001Mat
+map_Kd -o 0 0 -s 1 1 Metal001_1K-PNG_Color.png
+map_Pm -o 0 0 -s 1 1 Metal001_1K-PNG_Metalness.png
+bump -o 0 0 -s 1 1 Metal001_1K-PNG_NormalGL.png
+Kd 1 1 1
+d 1
+
+newmtl YuubinPostTextsETCMat
+map_Kd -o 0 0 -s 1 1 YuubinPostTextsETC.png
+Kd 1 1 1
+d 1
+
+newmtl YuubinPostTextsETCMatPaper
+map_Kd -o 0 0 -s 1 1 YuubinPostTextsETC.png
+Kd 1 1 1
+d 1
+

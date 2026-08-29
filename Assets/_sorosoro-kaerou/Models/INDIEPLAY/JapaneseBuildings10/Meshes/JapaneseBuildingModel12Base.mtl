@@ -1,0 +1,83 @@
+newmtl JPBM12Metal003_2KMat
+map_Kd -o 0 0 -s 1 1 Metal003_2K_Color.jpg
+map_Pm -o 0 0 -s 1 1 Metal003_2K_Metalness.jpg
+bump -o 0 0 -s 1 1 Metal003_2K_Normal.jpg
+Kd 1 1 1
+d 1
+
+newmtl JPBM12Tiles133C
+map_Kd -o 0 0 -s 1 1 Tiles133C_1K-PNG_Color.png
+map_Pm -o 0 0 -s 1 1 Tiles133C_1K-PNG_Roughness.png
+bump -o 0 0 -s 1 1 Tiles133C_1K-PNG_NormalDX.png
+disp -o 0 0 -s 1 1 Tiles133C_1K-PNG_Displacement.png
+Kd 1 1 1
+d 1
+
+newmtl JPBM12Concrete035_1K
+map_Kd -o 0 0 -s 0.3 0.5 Concrete035_1K-PNG_Color.png
+map_Pm -o 0 0 -s 1 1 Concrete035_1K-PNG_Roughness.png
+bump -o 0 0 -s 1 1 Concrete035_1K-PNG_NormalDX.png
+disp -o 0 0 -s 1 1 Concrete035_1K-PNG_Displacement.png
+Kd 1 1 1
+d 1
+
+newmtl JPBM12Plaster001_2KMatYellow
+map_Kd -o 0 0 -s 0.5 0.5 Plaster001_2K_Color.jpg
+map_Pm -o 0 0 -s 1 1 Plaster001_2K_Roughness.jpg
+bump -o 0 0 -s 1 1 Plaster001_2K_Normal.jpg
+Kd 0.9209684 0.9811321 0.9385919
+d 1
+
+newmtl JPBM12Plaster001_2KMatBlack
+map_Kd -o 0 0 -s 0.5 0.5 Plaster001_2K_Color.jpg
+map_Pm -o 0 0 -s 1 1 Plaster001_2K_Roughness.jpg
+bump -o 0 0 -s 1 1 Plaster001_2K_Normal.jpg
+Kd 0.3679245 0.3679245 0.3679245
+d 1
+
+newmtl JPBM12MosaicGlassMatOnlyN
+bump -o 0 0 -s 1 1 glass-texture-abstract-backgroundN.jpg
+Kd 0 0 0
+d 1
+
+newmtl JPBM12Concrete029_2KMatYellow
+map_Kd -o 0 0 -s 0.07 0.05 Concrete029_2K-JPG_Color.jpg
+map_Pm -o 0 0 -s 1 1 Concrete029_2K-JPG_Roughness.jpg
+bump -o 0 0 -s 1 1 Concrete029_2K-JPG_NormalDX.jpg
+disp -o 0 0 -s 1 1 Concrete029_2K-JPG_Displacement.jpg
+Kd 0.9019608 0.972549 0.9294118
+d 1
+
+newmtl JPBM12Concrete029_2KMatDark
+map_Kd -o 0 0 -s 0.07 0.05 Concrete029_2K-JPG_Color.jpg
+map_Pm -o 0 0 -s 1 1 Concrete029_2K-JPG_Roughness.jpg
+bump -o 0 0 -s 1 1 Concrete029_2K-JPG_NormalDX.jpg
+disp -o 0 0 -s 1 1 Concrete029_2K-JPG_Displacement.jpg
+Kd 0.6037736 0.6037736 0.6037736
+d 1
+
+newmtl JPBM12Metal001Mat
+map_Kd -o 0 0 -s 1 1 Metal001_1K-PNG_Color.png
+map_Pm -o 0 0 -s 1 1 Metal001_1K-PNG_Metalness.png
+bump -o 0 0 -s 1 1 Metal001_1K-PNG_NormalGL.png
+Kd 0.6784314 0.6784314 0.6784314
+d 1
+
+newmtl JPBM12Plastic013B_1KGray
+map_Kd -o 0 0 -s 1 1 Plastic013B_1K-JPG_Color.jpg
+map_Pm -o 0 0 -s 1 1 Plastic013B_1K-JPG_Roughness.jpg
+bump -o 0 0 -s 1 1 Plastic013B_1K-JPG_NormalGL.jpg
+disp -o 0 0 -s 1 1 Plastic013B_1K-JPG_Displacement.jpg
+Kd 0.509804 0.509804 0.5019608
+d 1
+
+newmtl Black
+Kd 0 0 0
+d 1
+
+newmtl JPBM7LampMatOff
+map_Kd -o 0 0 -s 1 1 Plastic013B_1K-JPG_Color.jpg
+bump -o 0 0 -s 1 1 Plastic013B_1K-JPG_NormalGL.jpg
+Kd 0.9622642 0.9565258 0.9304913
+d 1
+

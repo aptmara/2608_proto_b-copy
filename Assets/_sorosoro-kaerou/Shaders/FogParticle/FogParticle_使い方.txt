@@ -1,0 +1,24 @@
+・霧の存在時間を変えたい
+「Start Lifetime」の値を大きくすると、霧の存在時間が長くなります。反映されなければシーンビューから「FogParticle」を「Restart」してください。
+
+
+
+・霧の大きさを変えたい
+「Start Size」の値を変えてください。反映されなければシーンビューから「FogParticle」を「Restart」してください。
+
+
+
+・霧の濃さを変えたい
+「Emission」>「Rate over Time」の大きくすると霧が濃くなります。反映されなければシーンビューから「FogParticle」を「Restart」してください。
+
+
+・霧の発生するエリアの形を変えたい
+「Shape」>「Shape」で任意の形に変更できます。反映されなければシーンビューから「FogParticle」を「Restart」してください。
+
+
+・霧の範囲を変えたい
+「Shape」>「Scale」の値を変えてください。反映されなければシーンビューから「FogParticle」を「Restart」してください。
+
+
+・霧の形を変えたい
+「FogParticle」フォルダ > 「Texture」のf1からf5の内から任意のテクスチャを選択してください。選択したテクスチャを、FogParticleのマテリアル > 「Albedo」に割り当ててください。
