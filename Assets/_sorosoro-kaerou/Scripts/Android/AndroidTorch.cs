@@ -104,6 +104,8 @@ public class AndroidTorch : MonoBehaviour
                 transform.rotation
             );
 
+            GetComponent<AndroidPlayerInput>()?.TriggerShutter();
+
             // 3秒後にこのオブジェクトを削除
             Destroy(obj, 3f);
         }
