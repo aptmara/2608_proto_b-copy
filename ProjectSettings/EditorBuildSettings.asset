@@ -4,5 +4,9 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_sorosoro-kaerou/Scenes/Dev/Yamayo/Android.unity
+    guid: 387d303b0d004e641be3134157b351e8
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0
