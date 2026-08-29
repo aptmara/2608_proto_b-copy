@@ -295,11 +295,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!20 &1290653451 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 7593993163548750220, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
-  m_PrefabInstance: {fileID: 88223110286374637}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1527935585
 GameObject:
   m_ObjectHideFlags: 0
@@ -409,8 +404,7 @@ MonoBehaviour:
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
-  m_Cameras:
-  - {fileID: 1290653451}
+  m_Cameras: []
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2

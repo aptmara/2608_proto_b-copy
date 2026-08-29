@@ -4,5 +4,15 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_sorosoro-kaerou/Scenes/Dev/Noguchi/MainGame.unity
+    guid: b17f460cc39305f4898233a6ff75a795
+  - enabled: 1
+    path: Assets/_sorosoro-kaerou/Scenes/Dev/Noguchi/Result.unity
+    guid: 1892500cfb1b5f64fb2f05d4cce21ecc
+  - enabled: 1
+    path: Assets/_sorosoro-kaerou/Scenes/Dev/Noguchi/Title.unity
+    guid: 5cb4dfb0685e6894daab01478fc0696d
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0
