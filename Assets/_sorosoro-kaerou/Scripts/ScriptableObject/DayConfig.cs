@@ -31,4 +31,7 @@ public sealed class DayConfig : ScriptableObject
 
     [Tooltip("Day 0専用の固定イベント列（※本編用Configでは空配列のままでよい）")]
     public SoundEventDefinition[] fixedSequence;
+
+    [Tooltip("その日に出現する音イベントの抽選プール")]
+    public SoundEventDefinition[] pool;
 }

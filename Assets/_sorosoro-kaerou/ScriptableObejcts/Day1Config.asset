@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d07fc6478087e8428a4a133f282610d, type: 3}
+  m_Name: Day1Config
+  m_EditorClassIdentifier: Assembly-CSharp::DayConfig
+  day: 1
+  requiredWalkSeconds: 10
+  eventCount: 5
+  anomalyRatio: 0.4
+  judgeWindowDuration: 3
+  allowGameOver: 1
+  countScore: 1
+  fixedSequence: []
+  pool:
+  - {fileID: 11400000, guid: 33fa13ea1b8f8ca4a94388eb3320eda3, type: 2}
+  - {fileID: 11400000, guid: dc21298d0134c524f9a9e60bc7905977, type: 2}
