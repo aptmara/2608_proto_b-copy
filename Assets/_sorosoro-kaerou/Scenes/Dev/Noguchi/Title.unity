@@ -840,7 +840,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TitleSceneChanger
   titleCanvasGroup: {fileID: 657425808}
   dialogManager: {fileID: 2137257542}
-  nextSceneName: MainGame
+  nextSceneName: Tutorial
   fadeDuration: 1
   waitBeforeDialog: 1
   dialogMessage: "\u305D\u308D\u305D\u308D\u5E30\u308D\u3046..."
@@ -1342,8 +1342,8 @@ PrefabInstance:
       addedObject: {fileID: 1749205510}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
---- !u!4 &88223110286374638 stripped
-Transform:
+--- !u!224 &88223110286374638 stripped
+RectTransform:
   m_CorrespondingSourceObject: {fileID: 6884728386458180863, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
   m_PrefabInstance: {fileID: 88223110286374637}
   m_PrefabAsset: {fileID: 0}
