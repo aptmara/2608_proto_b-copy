@@ -148,6 +148,12 @@ public sealed class GameManager : MonoBehaviour
         // 1. 入力を読む
         state.SyncInput(input);
 
+        // ShutterDownはウィンドウの開閉に関わらず毎フレーム読み切って即消費する。
+        // HandleJudgingの中だけで読むと、ウィンドウが閉じている間に来た入力が
+        // 消費されずに残り、次のウィンドウで誤検出されるため。
+        bool shutterDown = input.ShutterDown;
+        if (shutterDown) input.ConsumeShutter();
+
         // 2. 電池を減らす（ライト制御より先）
         // 撮影後の停止中は減らさない。プレイヤーが操作している時間ではないため。
         if (state.IsTurnedBack && !battery.IsEmpty && !isHolding)
@@ -183,7 +189,7 @@ public sealed class GameManager : MonoBehaviour
         // 6. 判定処理またはイベント発火
         if (judgeWindow.IsOpen)
         {
-            HandleJudging();
+            HandleJudging(shutterDown);
         }
         else if (soundPlayer.CanFire(RemainToDayEnd()))
         {
@@ -235,15 +241,16 @@ public sealed class GameManager : MonoBehaviour
 
         GameEvents.RaiseSoundPlayed(def.kind);
         GameEvents.RaiseJudgeWindowOpened(config.judgeWindowDuration);
+        GameEvents.RaiseGhostAppeared();
     }
 
     // ---------------------------------------------------------------
     // 判定受付中の処理（4象限の入口）
     // ---------------------------------------------------------------
-    void HandleJudging()
+    void HandleJudging(bool shutterDown)
     {
         // シャッターはウィンドウが開いている間だけ拾う
-        if (input.ShutterDown)
+        if (shutterDown)
         {
             bool flashSucceeded = battery.TryConsumeFlash();
             feedback.Flash();
@@ -318,12 +325,13 @@ public sealed class GameManager : MonoBehaviour
         float hold = ctx.didShutter ? balance.stagingWaitTime : 0f;
         if (result == JudgeResult.Wasted) hold = Mathf.Max(hold, balance.wastedStunTime);
 
-        // 撮影した全ケースで発火し、幽霊が写っていなければnullを渡す。
+        // 撮影した全ケース（Repelled/Wasted問わず）で発火し、正体画像を渡す。
+        // 環境音で個別画像が未設定の場合はnull（「何も写っていなかった」の表現）。
         // 停止するケースと1:1にしてあるため、UI側は「来たら出す、消えたら止まりが明ける」だけで済む。
         // state.ClearCurrentEvent()より前に呼ぶ必要がある（PickGhostSpriteがCurrentEventを参照するため）。
         if (ctx.didShutter)
         {
-            GameEvents.RaisePhotoCaptured(result == JudgeResult.Repelled ? PickGhostSprite() : null);
+            GameEvents.RaisePhotoCaptured(PickGhostSprite());
             StopSound();
         }
 
@@ -332,15 +340,18 @@ public sealed class GameManager : MonoBehaviour
     }
 
     // ---------------------------------------------------------------
-    // 撮影された幽霊画像の決定
+    // 撮影された正体画像の決定
     // ---------------------------------------------------------------
-    // SoundEventDefinitionに指定があればそれを優先し、無ければプールから抽選する。
+    // SoundEventDefinitionに指定があればそれを優先し、無ければ怪異のときだけプールから抽選する。
     // これにより「今はランダム、後から特定の音に画像を紐づけたい」がコード変更なしで切り替わる。
+    // 環境音でghostSprite未設定の場合はプールを使わずnullを返す（Wastedで幽霊が写るのは矛盾するため）。
     // 抽選に UnityEngine.Random ではなく既存の System.Random を使うのは、音イベントと乱数源を揃えるため。
     Sprite PickGhostSprite()
     {
         var def = state.CurrentEvent;
-        if (def != null && def.ghostSprite != null) return def.ghostSprite;
+        if (def == null) return null;
+        if (def.ghostSprite != null) return def.ghostSprite;
+        if (def.kind != SoundKind.Anomaly) return null;
 
         var pool = balance.fallbackGhostSprites;
         if (pool == null || pool.Length == 0) return null;

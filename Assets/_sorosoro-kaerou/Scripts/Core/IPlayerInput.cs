@@ -13,5 +13,8 @@ namespace SorosoroKaerou
 
         /// <summary>撮影ボタンを押した瞬間か（判定入力）</summary>
         bool ShutterDown { get; }
+
+        /// <summary>ShutterDownを読み取った側が呼ぶ。フラグの持ち越しを防ぐための明示的な消費</summary>
+        void ConsumeShutter();
     }
 }
