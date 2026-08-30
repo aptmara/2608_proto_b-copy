@@ -4,9 +4,10 @@
 //   WalkStart     = 歩き始めた後のメッセージ（複数）
 //   Second        = 環境音を鳴らした後のメッセージ（複数）
 //   数秒歩く       = 環境音を無視してまっすぐ歩き続ける
-//   BeforeAnomaly = 異常音が鳴る前のメッセージ（複数）
-//   AfterAnomaly  = 異常音が鳴った後のメッセージ（複数）
-//   その後、振り返ってシャッターを撮ったら FadeManager で MainGame へ遷移する。
+//   BeforeAnomaly = 異常音が鳴った後のメッセージ（複数）
+//   CheckPhoto    = メッセージ後、振り返ってシャッターを撮るのを待つ（失敗したら歩くところからやり直し）
+//   AfterAnomaly  = 撮影に成功した後のメッセージ（複数）
+//   その後、FadeManager で MainGame へ遷移する。
 // 入力は IPlayerInput（Editor= inputSource、実機= AndroidManager）。
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,12 +34,14 @@ public sealed class TutorialManager : MonoBehaviour
 
     [Header("判定")]
     [SerializeField] float walkSeconds = 1.5f;
+    [SerializeField] float failSeconds = 2.0f; // 異常音後に前を向いたままの場合の猶予時間
 
     TutorialSequencer sequencer;
     IPlayerInput input;
     Step step;
     int messageIndex;
     float walkTimer;
+    float failTimer; // 失敗判定用タイマー
 
     enum Step
     {
@@ -47,8 +50,8 @@ public sealed class TutorialManager : MonoBehaviour
         SecondText,
         Walking,
         BeforeAnomalyText,
-        AfterAnomalyText,
         CheckPhoto,
+        AfterAnomalyText,
         Transition
     }
 
@@ -106,7 +109,6 @@ public sealed class TutorialManager : MonoBehaviour
     {
         if (input != null) return;
         input = AndroidManager.Instance.PlayerInput;
-
     }
 
     // メッセージ表示（リスト末尾まで達したら onFinished を呼ぶ）
@@ -139,10 +141,10 @@ public sealed class TutorialManager : MonoBehaviour
                 ShowOrAdvance(secondMessages, BeginWalking);
                 break;
             case Step.BeforeAnomalyText:
-                ShowOrAdvance(beforeAnomalyMessages, PlayAnomalyAndAfter);
+                ShowOrAdvance(beforeAnomalyMessages, BeginCheckPhoto);
                 break;
             case Step.AfterAnomalyText:
-                ShowOrAdvance(afterAnomalyMessages, BeginCheckPhoto);
+                ShowOrAdvance(afterAnomalyMessages, BeginTransition);
                 break;
         }
     }
@@ -173,27 +175,29 @@ public sealed class TutorialManager : MonoBehaviour
         Debug.Log("[TutorialManager] 数秒歩くフェーズ開始");
     }
 
-    void BeginBeforeAnomaly()
+    void PlayAnomalyAndBeforeText()
     {
         step = Step.BeforeAnomalyText;
         messageIndex = 0;
-        Debug.Log("[TutorialManager] BeforeAnomalyフェーズ開始");
-        ShowOrAdvance(beforeAnomalyMessages, PlayAnomalyAndAfter);
-    }
-
-    void PlayAnomalyAndAfter()
-    {
-        step = Step.AfterAnomalyText;
-        messageIndex = 0;
         Debug.Log("[TutorialManager] 異常音を鳴らします");
         PlayCurrentEvent(); // 異常音
-        ShowOrAdvance(afterAnomalyMessages, BeginCheckPhoto);
+        Debug.Log("[TutorialManager] BeforeAnomalyフェーズ開始");
+        ShowOrAdvance(beforeAnomalyMessages, BeginCheckPhoto);
     }
 
     void BeginCheckPhoto()
     {
         step = Step.CheckPhoto;
+        failTimer = 0f; // 判定タイマーリセット
         Debug.Log("[TutorialManager] 撮影確認フェーズ開始");
+    }
+
+    void BeginAfterAnomaly()
+    {
+        step = Step.AfterAnomalyText;
+        messageIndex = 0;
+        Debug.Log("[TutorialManager] 撮影成功。AfterAnomalyフェーズ開始");
+        ShowOrAdvance(afterAnomalyMessages, BeginTransition);
     }
 
     // ---- 操作確認 ----
@@ -212,7 +216,7 @@ public sealed class TutorialManager : MonoBehaviour
         if (walkTimer >= walkSeconds)
         {
             Debug.Log("[TutorialManager] 数秒歩いた（まっすぐ歩行OK）");
-            BeginBeforeAnomaly();
+            PlayAnomalyAndBeforeText();
         }
     }
 
@@ -220,15 +224,33 @@ public sealed class TutorialManager : MonoBehaviour
     {
         if (input == null) return;
 
-        // 異常音のときは振り返ってシャッターを撮るのが正解。
         bool turnedBack = input.IsTurnedBack;
         bool shutter = input.ShutterDown;
         if (shutter) input.ConsumeShutter();
 
+        // 異常音のときは振り返ってシャッターを撮るのが正解
         if (turnedBack && shutter)
         {
             Debug.Log("[TutorialManager] 異常音の操作OK（振り返り＋シャッター）");
-            BeginTransition();
+            BeginAfterAnomaly();
+            return;
+        }
+
+        // 失敗判定：前を向いたまま一定時間経過したらやり直し
+        if (!turnedBack)
+        {
+            failTimer += Time.deltaTime;
+            if (failTimer >= failSeconds)
+            {
+                Debug.Log("[TutorialManager] 撮影失敗。数秒歩くフェーズからやり直します。");
+                sequencer.Retry(); // 次のPlayCurrentEvent()で同じ異常音が鳴るようにする
+                BeginWalking();    // 歩くフェーズへ戻る
+            }
+        }
+        else
+        {
+            // 振り返っている間は失敗タイマーをリセット（シャッター待ち状態）
+            failTimer = 0f;
         }
     }
 
