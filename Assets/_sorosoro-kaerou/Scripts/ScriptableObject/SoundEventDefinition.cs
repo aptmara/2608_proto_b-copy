@@ -17,5 +17,6 @@ public sealed class SoundEventDefinition : ScriptableObject
     [Range(0.5f, 2f)]
     public float pitch = 1f;
     
+    [Tooltip("撮影成功時に表示する画像")]
     public Sprite ghostSprite;
 }
