@@ -36,6 +36,7 @@ public sealed class GameManager : MonoBehaviour
     bool wasTurnedBack;
     float lookBackTimer;
     bool hasRaisedLookBackHeld;
+    bool wasWalkingForward;
 
     GameObject calibrationCanvasInstance;
     bool isCalibrating;
@@ -138,6 +139,7 @@ public sealed class GameManager : MonoBehaviour
         wasTurnedBack = false;
         lookBackTimer = 0f;
         hasRaisedLookBackHeld = false;
+        wasWalkingForward = false;
 
         // Day0（fixedSequenceあり）はTutorialSequencer、本編はRandomSequencer
         sequencer = (config.fixedSequence != null && config.fixedSequence.Length > 0)
@@ -234,6 +236,12 @@ public sealed class GameManager : MonoBehaviour
         progress.Tick(dt, forward);
         soundPlayer.Tick(dt, forward);
         judgeWindow.Tick(dt); // 常に減算
+
+        if (forward != wasWalkingForward)
+        {
+            wasWalkingForward = forward;
+            GameEvents.RaiseWalkingChanged(forward);
+        }
 
         GameEvents.RaiseProgressChanged(progress.Normalized);
 
