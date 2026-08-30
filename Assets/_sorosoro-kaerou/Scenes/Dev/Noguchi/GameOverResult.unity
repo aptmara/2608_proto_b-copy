@@ -282,7 +282,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4476557311230053530, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6161549021514815945, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
       propertyPath: m_Name
@@ -290,7 +290,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6178002963574901594, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6513873342413539022, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
       propertyPath: m_IsActive
@@ -345,6 +345,62 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
+--- !u!114 &596323234 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6467646026223534535, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
+  m_PrefabInstance: {fileID: 596323233}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!1 &619192804
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 619192807}
+  - component: {fileID: 619192806}
+  m_Layer: 0
+  m_Name: ButtonHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &619192806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 619192804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4eb60b2fd1c68c4b95026f43a67fe02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonHandler
+  targetButton: {fileID: 596323234}
+--- !u!4 &619192807
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 619192804}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 869.1364, y: -0.00002, z: 2533.7188}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &820780266
 GameObject:
   m_ObjectHideFlags: 0
@@ -656,8 +712,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u30B2\u30FC\u30E0\u30AA\u30FC\u30D0\u30FC"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d1e1d800f0a358049bdb52eb7f830671, type: 2}
-  m_sharedMaterial: {fileID: 7242917898213433461, guid: d1e1d800f0a358049bdb52eb7f830671, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 926eaac09a20f754aa9564604bf21cde, type: 2}
+  m_sharedMaterial: {fileID: -5246646939695885054, guid: 926eaac09a20f754aa9564604bf21cde, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -681,8 +737,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 100
+  m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -734,6 +790,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1053912098}
   m_CullTransparentMesh: 1
+--- !u!1 &1427205797
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1427205799}
+  - component: {fileID: 1427205798}
+  m_Layer: 0
+  m_Name: GameOverTransitionHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1427205798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427205797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed118646a0a6dc745b5d8ccb3fbeffcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SoroSoro.Events.GameOverToTitleTransition
+  titleSceneName: Title
+--- !u!4 &1427205799
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427205797}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 869.1364, y: -0.00002, z: 2533.7188}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1659776811
 GameObject:
   m_ObjectHideFlags: 0
@@ -822,3 +923,5 @@ SceneRoots:
   - {fileID: 820780270}
   - {fileID: 1659776814}
   - {fileID: 596323233}
+  - {fileID: 619192807}
+  - {fileID: 1427205799}
