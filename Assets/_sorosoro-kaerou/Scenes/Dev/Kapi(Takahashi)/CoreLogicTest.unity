@@ -865,6 +865,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4a28d040f9f5c88448d1bceca9d9e10a, type: 2}
   - {fileID: 11400000, guid: 8fbb69e8e0d41d347a60ab17ee983dec, type: 2}
   balance: {fileID: 11400000, guid: 5361f845b59255e458da79ec7119eeb3, type: 2}
+  calibrationCanvasPrefab: {fileID: 2313484023576023883, guid: 3f56a7d56ebdf3b43807b9981fcb8572, type: 3}
 --- !u!4 &2000931441
 Transform:
   m_ObjectHideFlags: 0

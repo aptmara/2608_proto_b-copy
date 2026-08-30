@@ -29,6 +29,9 @@ namespace SoroSoro.Events
         // 正面復帰時・判定確定時（不変条件2により引数なし）
         public static event Action OnAimEnded;
 
+        // 後ろを一定時間以上向き続けた時
+        public static event Action OnLookBackHeld;
+
         // 判定確定時（引数: 判定結果）
         public static event Action<JudgeResult> OnJudged;
 
@@ -53,6 +56,9 @@ namespace SoroSoro.Events
         // 撮影時の硬直(演出用)
         public static event Action OnStagingFinished;
 
+        // 音イベント発火時の演出起点
+        public static event Action OnGhostAppeared;
+
         // 撮影が成立したときに発火。幽霊がいなければ null。
         public static event Action<Sprite> OnPhotoCaptured;
 
@@ -62,6 +68,9 @@ namespace SoroSoro.Events
         // 歩き音
         public static event Action<bool> OnWalkingChanged;
 
+        // 端末ライト（トーチ）ON/OFF切り替え時
+        public static event Action<bool> OnLightOnChanged;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()
         {
@@ -70,6 +79,7 @@ namespace SoroSoro.Events
             OnJudgeWindowOpened = null;
             OnAimStarted = null;
             OnAimEnded = null;
+            OnLookBackHeld = null;
             OnJudged = null;
             OnBatteryChanged = null;
             OnProgressChanged = null;
@@ -78,9 +88,11 @@ namespace SoroSoro.Events
             OnGameOver = null;
             OnShutterRequested = null;
             OnStagingFinished = null;
+            OnGhostAppeared = null;
             OnPhotoCaptured = null;
             OnPhonePoseConfirmed = null;
             OnWalkingChanged = null;
+            OnLightOnChanged = null;
 
             // Enter Play Mode Options でDomain Reloadを切っていると前回のPlayの値が残るため必ず戻す
             lastRaisedBattery = -1f;
@@ -100,6 +112,9 @@ namespace SoroSoro.Events
 
         public static void RaiseAimEnded()
             => OnAimEnded?.Invoke();
+
+        public static void RaiseLookBackHeld()
+            => OnLookBackHeld?.Invoke();
 
         public static void RaiseJudged(JudgeResult result)
             => OnJudged?.Invoke(result);
@@ -137,6 +152,9 @@ namespace SoroSoro.Events
         public static void RaiseStagingFinished()
             => OnStagingFinished?.Invoke();
 
+        public static void RaiseGhostAppeared()
+            => OnGhostAppeared?.Invoke();
+
         public static void RaisePhotoCaptured(Sprite ghost)
             => OnPhotoCaptured?.Invoke(ghost);
 
@@ -145,5 +163,8 @@ namespace SoroSoro.Events
 
         public static void RaiseWalkingChanged(bool walking)
             => OnWalkingChanged?.Invoke(walking);
+
+        public static void RaiseLightOnChanged(bool on)
+            => OnLightOnChanged?.Invoke(on);
     }
 }
