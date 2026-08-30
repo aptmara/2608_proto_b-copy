@@ -803,9 +803,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e68d05f7d96b9d43b9faae03dd385d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoroSoro.Events.GhostApproachViewer
-  player: {fileID: 0}
-  prefab: {fileID: 0}
-  mistSprite: {fileID: 0}
+  player: {fileID: 523272333}
+  prefab: {fileID: 7747895265651037551, guid: cf960639e38a59c459a6ae2ee8f020fa, type: 3}
+  mistSprite: {fileID: 21300000, guid: c722ddfa97cf8444b9f38f43aaa1f5ec, type: 3}
   spawnDistance: 8
   spawnHeight: 1.5
   approachSpeed: 0.8
@@ -4108,7 +4108,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1582550647}
-  m_Father: {fileID: 8756523251879308046}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &561788654
 GameObject:
@@ -13120,9 +13120,6 @@ PrefabInstance:
       addedObject: {fileID: 326649703}
     - targetCorrespondingSourceObject: {fileID: 316026707982990751, guid: 71f90b82532fba745a3772d81b6b2dfa, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 523272333}
-    - targetCorrespondingSourceObject: {fileID: 316026707982990751, guid: 71f90b82532fba745a3772d81b6b2dfa, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 622427320}
     - targetCorrespondingSourceObject: {fileID: 316026707982990751, guid: 71f90b82532fba745a3772d81b6b2dfa, type: 3}
       insertIndex: -1
@@ -13216,6 +13213,7 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 523272333}
   - {fileID: 1793705902}
   - {fileID: 364933866}
   - {fileID: 1005735905}
