@@ -3,12 +3,13 @@
 //   First         = 歩き始める前のメッセージ（複数）
 //   WalkStart     = 歩き始めた後のメッセージ（複数）
 //   Second        = 環境音を鳴らした後のメッセージ（複数）
-//   数秒歩く       = 環境音を無視してまっすぐ歩き続ける
+//   数秒歩く        = 環境音を無視してまっすぐ歩き続ける
 //   BeforeAnomaly = 異常音が鳴った後のメッセージ（複数）
-//   CheckPhoto    = メッセージ後、振り返ってシャッターを切る（分岐せず無条件で進行）
+//   CheckPhoto    = メッセージ後、ButtonHandlerのクリックイベントを待って進行
 //   AfterAnomaly  = 撮影成功後のメッセージ（複数）
 //   その後、FadeManager で MainGame へ遷移する。
 // 入力は IPlayerInput（Editor= inputSource、実機= AndroidManager）。
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SorosoroKaerou;
@@ -34,14 +35,12 @@ public sealed class TutorialManager : MonoBehaviour
 
     [Header("判定")]
     [SerializeField] float walkSeconds = 1.5f;
-    [SerializeField] float failSeconds = 2.0f; // 異常音後に前を向いたままの場合の猶予時間（※今回の修正では未使用になりますが互換性のため残しています）
 
     TutorialSequencer sequencer;
     IPlayerInput input;
     Step step;
     int messageIndex;
     float walkTimer;
-    float failTimer; // 失敗判定用タイマー
 
     enum Step
     {
@@ -95,14 +94,22 @@ public sealed class TutorialManager : MonoBehaviour
         {
             dialogManager.OnClosedComplete.RemoveListener(HandleDialogClosed);
         }
+
+        // シーン遷移時や破棄時にイベント登録を解除（メモリリーク・エラー防止）
+        if (ButtonHandler.Instance != null)
+        {
+            ButtonHandler.Instance.OnButtonClicked -= OnShutterClicked;
+        }
     }
 
     void Update()
     {
         TryAcquireInput();
 
-        if (step == Step.Walking) UpdateWalking();
-        else if (step == Step.CheckPhoto) UpdateCheckPhoto();
+        if (step == Step.Walking)
+        {
+            UpdateWalking();
+        }
     }
 
     void TryAcquireInput()
@@ -185,18 +192,55 @@ public sealed class TutorialManager : MonoBehaviour
         ShowOrAdvance(beforeAnomalyMessages, BeginCheckPhoto);
     }
 
+    // ---- シャッター（ボタン）入力待ち ----
     void BeginCheckPhoto()
     {
         step = Step.CheckPhoto;
-        failTimer = 0f; // 判定タイマーリセット
-        Debug.Log("[TutorialManager] 撮影確認フェーズ開始（自動成功）");
+        Debug.Log("[TutorialManager] 撮影確認フェーズ開始（ButtonHandlerの入力を待機します）");
+
+        if (ButtonHandler.Instance != null)
+        {
+            // ボタンが押されたら OnShutterClicked を呼ぶように登録
+            ButtonHandler.Instance.OnButtonClicked += OnShutterClicked;
+        }
+        else
+        {
+            Debug.LogError("[TutorialManager] ButtonHandler.Instance が見つかりません。自動で進行します。");
+            BeginAfterAnomaly(); // エラーで進行不能になるのを防ぐ
+        }
+    }
+
+    void OnShutterClicked()
+    {
+        // CheckPhotoフェーズ以外でボタンが押されても無視する
+        if (step != Step.CheckPhoto) return;
+
+        // 重複実行を防ぐため、イベントから自身を解除
+        if (ButtonHandler.Instance != null)
+        {
+            ButtonHandler.Instance.OnButtonClicked -= OnShutterClicked;
+        }
+
+        Debug.Log("[TutorialManager] ボタン入力を検知。入力重複を防ぐため数フレーム待機します...");
+        StartCoroutine(WaitAndBeginAfterAnomaly());
+    }
+
+    // 入力イベントが完全に消費されるのを待ってから次へ進むコルーチン
+    IEnumerator WaitAndBeginAfterAnomaly()
+    {
+        // メッセージの即時スキップ（吸われ）を防ぐため3フレーム待機
+        yield return null;
+        yield return null;
+        yield return null;
+
+        BeginAfterAnomaly();
     }
 
     void BeginAfterAnomaly()
     {
         step = Step.AfterAnomalyText;
         messageIndex = 0;
-        Debug.Log("[TutorialManager] 撮影成功。AfterAnomalyフェーズ開始");
+        Debug.Log("[TutorialManager] AfterAnomalyフェーズ開始");
         ShowOrAdvance(afterAnomalyMessages, BeginTransition);
     }
 
@@ -217,23 +261,6 @@ public sealed class TutorialManager : MonoBehaviour
         {
             Debug.Log("[TutorialManager] 数秒歩いた（まっすぐ歩行OK）");
             PlayAnomalyAndBeforeText();
-        }
-    }
-
-    void UpdateCheckPhoto()
-    {
-        if (input == null) return;
-
-        bool shutter = input.ShutterDown;
-        if (shutter) input.ConsumeShutter();
-
-        // 失敗判定を行わず、任意のタイミング（またはシャッター入力等）で無条件に成功扱いへ進める場合、
-        // ここではシャッターが押されたタイミング、あるいは即座に成功扱いに移行させます。
-        // 例として「シャッターが押されたら成功」とする場合は以下のようにします（自動ですぐに進めたい場合は shutter の判定を外してください）。
-        if (shutter)
-        {
-            Debug.Log("[TutorialManager] 撮影成功（無条件進行）");
-            BeginAfterAnomaly();
         }
     }
 
