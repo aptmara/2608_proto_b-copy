@@ -280,9 +280,17 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4476557311230053530, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6161549021514815945, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
       propertyPath: m_Name
       value: UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 6178002963574901594, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6513873342413539022, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
       propertyPath: m_IsActive
@@ -349,6 +357,7 @@ GameObject:
   - component: {fileID: 820780269}
   - component: {fileID: 820780268}
   - component: {fileID: 820780267}
+  - component: {fileID: 820780271}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -439,6 +448,28 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!95 &820780271
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820780266}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 61b076f5cd6ea7140a01e28cb6d5ae9a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &940194483
 GameObject:
   m_ObjectHideFlags: 0
@@ -623,7 +654,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "DAY1\u3000\u5E30\u5B85\u5931\u6557"
+  m_text: "\u30B2\u30FC\u30E0\u30AA\u30FC\u30D0\u30FC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d1e1d800f0a358049bdb52eb7f830671, type: 2}
   m_sharedMaterial: {fileID: 7242917898213433461, guid: d1e1d800f0a358049bdb52eb7f830671, type: 2}
@@ -632,8 +663,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 16777215
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
