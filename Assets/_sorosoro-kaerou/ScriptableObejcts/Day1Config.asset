@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Day1Config
   m_EditorClassIdentifier: Assembly-CSharp::DayConfig
   day: 1
-  requiredWalkSeconds: 55
+  requiredWalkSeconds: 5
   eventCount: 6
   anomalyRatio: 0.33
   judgeWindowDuration: 4
