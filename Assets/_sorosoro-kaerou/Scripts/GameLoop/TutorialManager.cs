@@ -126,12 +126,8 @@ public sealed class TutorialManager : MonoBehaviour
     void TryAcquireInput()
     {
         if (input != null) return;
-
-#if UNITY_ANDROID && !UNITY_EDITOR
         input = AndroidManager.Instance.PlayerInput;
-#else
-        input = inputSource as IPlayerInput;
-#endif
+
     }
 
     // メッセージ表示（リスト末尾まで達したら onFinished を呼ぶ）
