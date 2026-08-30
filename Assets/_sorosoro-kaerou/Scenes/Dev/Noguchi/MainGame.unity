@@ -9717,6 +9717,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2c3a19a703f19e499cc4749578aff2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DayClearContinueButton
+--- !u!114 &1050129596 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6467646026223534535, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
+  m_PrefabInstance: {fileID: 1050129589}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1050129592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1 &1151180275
 GameObject:
   m_ObjectHideFlags: 0
@@ -12106,7 +12117,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SoroSoro.Events.GameClearPanelController
   panelRoot: {fileID: 1005735900}
   handler: {fileID: 508142129}
-  continueButton: {fileID: 0}
+  continueButton: {fileID: 1050129596}
 --- !u!1 &1793705899
 GameObject:
   m_ObjectHideFlags: 0
