@@ -5,8 +5,8 @@
 //   Second        = 環境音を鳴らした後のメッセージ（複数）
 //   数秒歩く       = 環境音を無視してまっすぐ歩き続ける
 //   BeforeAnomaly = 異常音が鳴った後のメッセージ（複数）
-//   CheckPhoto    = メッセージ後、振り返ってシャッターを撮るのを待つ（失敗したら歩くところからやり直し）
-//   AfterAnomaly  = 撮影に成功した後のメッセージ（複数）
+//   CheckPhoto    = メッセージ後、振り返ってシャッターを切る（分岐せず無条件で進行）
+//   AfterAnomaly  = 撮影成功後のメッセージ（複数）
 //   その後、FadeManager で MainGame へ遷移する。
 // 入力は IPlayerInput（Editor= inputSource、実機= AndroidManager）。
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ public sealed class TutorialManager : MonoBehaviour
     [SerializeField] AudioSource audioSource;
     [SerializeField] MonoBehaviour inputSource;
     [SerializeField] SoundEventDefinition[] sequence; // 先頭=環境音、次=異常音
-    [SerializeField] PlayerForwardWalker walker;       // 歩行制御用（未設定なら自動検出）
+    [SerializeField] PlayerForwardWalker walker;      // 歩行制御用（未設定なら自動検出）
 
     [Header("メッセージ（各工程で複数回表示）")]
     [SerializeField] List<string> firstMessages = new List<string>();
@@ -34,7 +34,7 @@ public sealed class TutorialManager : MonoBehaviour
 
     [Header("判定")]
     [SerializeField] float walkSeconds = 1.5f;
-    [SerializeField] float failSeconds = 2.0f; // 異常音後に前を向いたままの場合の猶予時間
+    [SerializeField] float failSeconds = 2.0f; // 異常音後に前を向いたままの場合の猶予時間（※今回の修正では未使用になりますが互換性のため残しています）
 
     TutorialSequencer sequencer;
     IPlayerInput input;
@@ -189,7 +189,7 @@ public sealed class TutorialManager : MonoBehaviour
     {
         step = Step.CheckPhoto;
         failTimer = 0f; // 判定タイマーリセット
-        Debug.Log("[TutorialManager] 撮影確認フェーズ開始");
+        Debug.Log("[TutorialManager] 撮影確認フェーズ開始（自動成功）");
     }
 
     void BeginAfterAnomaly()
@@ -224,33 +224,16 @@ public sealed class TutorialManager : MonoBehaviour
     {
         if (input == null) return;
 
-        bool turnedBack = input.IsTurnedBack;
         bool shutter = input.ShutterDown;
         if (shutter) input.ConsumeShutter();
 
-        // 異常音のときは振り返ってシャッターを撮るのが正解
-        if (turnedBack && shutter)
+        // 失敗判定を行わず、任意のタイミング（またはシャッター入力等）で無条件に成功扱いへ進める場合、
+        // ここではシャッターが押されたタイミング、あるいは即座に成功扱いに移行させます。
+        // 例として「シャッターが押されたら成功」とする場合は以下のようにします（自動ですぐに進めたい場合は shutter の判定を外してください）。
+        if (shutter)
         {
-            Debug.Log("[TutorialManager] 異常音の操作OK（振り返り＋シャッター）");
+            Debug.Log("[TutorialManager] 撮影成功（無条件進行）");
             BeginAfterAnomaly();
-            return;
-        }
-
-        // 失敗判定：前を向いたまま一定時間経過したらやり直し
-        if (!turnedBack)
-        {
-            failTimer += Time.deltaTime;
-            if (failTimer >= failSeconds)
-            {
-                Debug.Log("[TutorialManager] 撮影失敗。数秒歩くフェーズからやり直します。");
-                sequencer.Retry(); // 次のPlayCurrentEvent()で同じ異常音が鳴るようにする
-                BeginWalking();    // 歩くフェーズへ戻る
-            }
-        }
-        else
-        {
-            // 振り返っている間は失敗タイマーをリセット（シャッター待ち状態）
-            failTimer = 0f;
         }
     }
 
