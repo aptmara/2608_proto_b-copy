@@ -448,8 +448,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bedf8458a4f0057418d38798ca2647aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SyncLightPosition
-  lightOnRadiusMultiplier: 1.4
-  lightOnColorMultiplier: 1.3
 --- !u!114 &487800876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -582,7 +580,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b467094034cdde4f90a31e3426a7c72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SorosoroKaerou.PlayerForwardWalker
-  inputSource: {fileID: 0}
+  inputSource: {fileID: 95125908}
   feedbackSource: {fileID: 0}
   walkSpeed: 1.2
   bobHeight: 0.03
@@ -733,9 +731,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 33fa13ea1b8f8ca4a94388eb3320eda3, type: 2}
   - {fileID: 11400000, guid: dc21298d0134c524f9a9e60bc7905977, type: 2}
   firstMessages:
-  - "\u901A\u5E38\u97F3\u30C6\u30B9\u30C8"
+  - "\u300C\u6697\u304F\u306A\u3063\u3066\u304D\u305F\u306A...\u300D"
+  - "\u5BB6\u306B\u5E30\u308A\u307E\u3057\u3087\u3046\u3002<br>\u30B9\u30DE\u30DB\u3092\u6301\u3063\u3066\u304F\u3060\u3055\u3044"
   secondMessages:
-  - "\u7570\u5E38\u97F3\u30C6\u30B9\u30C8"
+  - 
   nextSceneName: MainGame
   forwardConfirmSeconds: 1.5
 --- !u!1 &1385207108
