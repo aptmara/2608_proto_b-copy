@@ -1,5 +1,6 @@
 // TutorialManager.cs
 // チュートリアル専用。各工程を順に進める。
+//   Calibration   = キャリブレーション（スマホを正しい姿勢で構える）
 //   First         = 歩き始める前のメッセージ（複数）
 //   WalkStart     = 歩き始めた後のメッセージ（複数）
 //   Second        = 環境音を鳴らした後のメッセージ（複数）
@@ -11,6 +12,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using SorosoroKaerou;
+using SoroSoro.Events;
 
 public sealed class TutorialManager : MonoBehaviour
 {
@@ -20,6 +22,9 @@ public sealed class TutorialManager : MonoBehaviour
     [SerializeField] MonoBehaviour inputSource;
     [SerializeField] SoundEventDefinition[] sequence; // 先頭=環境音、次=異常音
     [SerializeField] PlayerForwardWalker walker;       // 歩行制御用（未設定なら自動検出）
+
+    [Header("キャリブレーション")]
+    [SerializeField] GameObject calibrationCanvasPrefab;
 
     [Header("メッセージ（各工程で複数回表示）")]
     [SerializeField] List<string> firstMessages = new List<string>();
@@ -39,9 +44,11 @@ public sealed class TutorialManager : MonoBehaviour
     Step step;
     int messageIndex;
     float walkTimer;
+    GameObject calibrationCanvasInstance;
 
     enum Step
     {
+        Calibration,
         FirstText,
         WalkStartText,
         SecondText,
@@ -50,6 +57,16 @@ public sealed class TutorialManager : MonoBehaviour
         AfterAnomalyText,
         CheckPhoto,
         Transition
+    }
+
+    void OnEnable()
+    {
+        GameEvents.OnPhonePoseConfirmed += HandlePhonePoseConfirmed;
+    }
+
+    void OnDisable()
+    {
+        GameEvents.OnPhonePoseConfirmed -= HandlePhonePoseConfirmed;
     }
 
     void Start()
@@ -75,15 +92,13 @@ public sealed class TutorialManager : MonoBehaviour
             walker = FindFirstObjectByType<PlayerForwardWalker>();
         }
 
-        // 歩き始める前なので、一旦歩行を止めておく
+        // キャリブレーション完了まで歩行を止める
         if (walker != null)
         {
             walker.enabled = false;
         }
 
-        step = Step.FirstText;
-        messageIndex = 0;
-        ShowOrAdvance(firstMessages, StartWalkingAndWalkStart);
+        BeginCalibration();
     }
 
     void OnDestroy()
@@ -91,6 +106,12 @@ public sealed class TutorialManager : MonoBehaviour
         if (dialogManager != null)
         {
             dialogManager.OnClosedComplete.RemoveListener(HandleDialogClosed);
+        }
+
+        if (calibrationCanvasInstance != null)
+        {
+            Destroy(calibrationCanvasInstance);
+            calibrationCanvasInstance = null;
         }
     }
 
@@ -152,6 +173,43 @@ public sealed class TutorialManager : MonoBehaviour
     }
 
     // ---- 工程遷移 ----
+
+    void BeginCalibration()
+    {
+        step = Step.Calibration;
+        if (calibrationCanvasPrefab != null)
+        {
+            calibrationCanvasInstance = Instantiate(calibrationCanvasPrefab);
+            Debug.Log("[TutorialManager] キャリブレーション開始");
+        }
+        else
+        {
+            // prefabが未設定の場合はスキップ
+            Debug.LogWarning("[TutorialManager] calibrationCanvasPrefab が未設定のためスキップします。", this);
+            BeginFirstText();
+        }
+    }
+
+    void HandlePhonePoseConfirmed()
+    {
+        if (step != Step.Calibration) return;
+
+        if (calibrationCanvasInstance != null)
+        {
+            Destroy(calibrationCanvasInstance);
+            calibrationCanvasInstance = null;
+        }
+        Debug.Log("[TutorialManager] キャリブレーション完了");
+        BeginFirstText();
+    }
+
+    void BeginFirstText()
+    {
+        step = Step.FirstText;
+        messageIndex = 0;
+        ShowOrAdvance(firstMessages, StartWalkingAndWalkStart);
+    }
+
     void StartWalkingAndWalkStart()
     {
         if (walker != null) walker.enabled = true; // 歩き始める
