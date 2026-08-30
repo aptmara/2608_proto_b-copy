@@ -6,8 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_sorosoro-kaerou/Scenes/Dev/Noguchi/Player3D.unity
-    guid: 8fe3dc34b8230fa4b9f53c77f2ffcce8
+    path: Assets/_sorosoro-kaerou/Scenes/Dev/Noguchi/Title.unity
+    guid: 5cb4dfb0685e6894daab01478fc0696d
+  - enabled: 1
+    path: Assets/_sorosoro-kaerou/Scenes/Dev/Noguchi/Tutorial.unity
+    guid: c679a6243e6f6f54daf696283a494b9a
   - enabled: 1
     path: Assets/_sorosoro-kaerou/Scenes/CoreLogicTest.unity
     guid: 32437ffea457e9349aca084df6fd82f8
@@ -21,13 +24,13 @@ EditorBuildSettings:
     path: Assets/_sorosoro-kaerou/Scenes/Dev/Noguchi/MainGame.unity
     guid: b17f460cc39305f4898233a6ff75a795
   - enabled: 1
-    path: Assets/_sorosoro-kaerou/Scenes/Dev/Noguchi/Title.unity
-    guid: 5cb4dfb0685e6894daab01478fc0696d
-  - enabled: 1
     path: Assets/_sorosoro-kaerou/Scenes/Dev/Noguchi/GameClearResult.unity
     guid: da2135e18a4364c40af91e86b5e9a0ea
   - enabled: 1
     path: Assets/_sorosoro-kaerou/Scenes/Dev/Noguchi/GameOverResult.unity
     guid: eafd6d5a6c659e8489e3f1b0df5b2b1f
+  - enabled: 1
+    path: Assets/_sorosoro-kaerou/Scenes/Dev/Noguchi/Player3D.unity
+    guid: 8fe3dc34b8230fa4b9f53c77f2ffcce8
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
