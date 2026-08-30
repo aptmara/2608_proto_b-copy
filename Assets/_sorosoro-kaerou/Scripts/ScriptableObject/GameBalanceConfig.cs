@@ -31,6 +31,9 @@ public sealed class GameBalanceConfig : ScriptableObject
     [Header("ペナルティ")]
     [Tooltip("環境音に対して空振り撮影した際の硬直時間（秒）")]
     public float wastedStunTime = 0.4f;
+
+    [Tooltip("後ろを向き続けてからイベントを発火するまでの時間（秒）")]
+    public float lookBackDurationThreshold = 2f;
     
     [Header("幽霊抽選プール")]
     public Sprite[] fallbackGhostSprites;

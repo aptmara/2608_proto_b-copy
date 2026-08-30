@@ -14,6 +14,9 @@ public sealed class GameManager : MonoBehaviour
     [SerializeField] DayConfig[] dayConfigs;         // 先頭にDay0を置く
     [SerializeField] GameBalanceConfig balance;
 
+    [Header("キャリブレーション")]
+    [SerializeField] GameObject calibrationCanvasPrefab;
+
     IPlayerInput input;
     IFeedbackPresenter feedback;
     BatteryModel battery;
@@ -35,6 +38,9 @@ public sealed class GameManager : MonoBehaviour
     bool hasRaisedLookBackHeld;
     bool wasWalkingForward;
 
+    GameObject calibrationCanvasInstance;
+    bool isCalibrating;
+
     // 空振り硬直
     // 撮影後の停止（演出待機 兼 空振り硬直）
     // balance.stagingWaitTime を0にすれば演出待機分は消え、従来の空振り硬直だけが残る
@@ -43,6 +49,7 @@ public sealed class GameManager : MonoBehaviour
 
     // 演出側・デバッグ表示から停止中かどうかを参照するための入口
     public bool IsHolding => isHolding;
+    public bool IsCalibrating => isCalibrating;
 
     bool waitingContinue;
 
@@ -66,11 +73,22 @@ public sealed class GameManager : MonoBehaviour
     void OnEnable()
     {
         GameEvents.OnStagingFinished += NotifyStagingFinished;
+        GameEvents.OnPhonePoseConfirmed += HandlePhonePoseConfirmed;
     }
 
     void OnDisable()
     {
         GameEvents.OnStagingFinished -= NotifyStagingFinished;
+        GameEvents.OnPhonePoseConfirmed -= HandlePhonePoseConfirmed;
+    }
+
+    void OnDestroy()
+    {
+        if (calibrationCanvasInstance != null)
+        {
+            Destroy(calibrationCanvasInstance);
+            calibrationCanvasInstance = null;
+        }
     }
 
     void Start()
@@ -139,6 +157,33 @@ public sealed class GameManager : MonoBehaviour
         GameEvents.RaiseDayStarted(config.day);
         GameEvents.RaiseBatteryChanged(battery.Normalized);
         GameEvents.RaiseProgressChanged(progress.Normalized);
+
+        if (calibrationCanvasPrefab != null)
+        {
+            if (calibrationCanvasInstance != null)
+            {
+                Destroy(calibrationCanvasInstance);
+            }
+            calibrationCanvasInstance = Instantiate(calibrationCanvasPrefab);
+            isCalibrating = true;
+        }
+        else
+        {
+            isCalibrating = false;
+        }
+    }
+
+    /// <summary>
+    /// キャリブレーション完了時の処理。
+    /// </summary>
+    void HandlePhonePoseConfirmed()
+    {
+        if (calibrationCanvasInstance != null)
+        {
+            Destroy(calibrationCanvasInstance);
+            calibrationCanvasInstance = null;
+        }
+        isCalibrating = false;
     }
 
     // ---------------------------------------------------------------
@@ -146,6 +191,7 @@ public sealed class GameManager : MonoBehaviour
     // ---------------------------------------------------------------
     void Update()
     {
+        if (isCalibrating) return;
         if (state.Phase is PhaseKind.Title or PhaseKind.GameOver or PhaseKind.Result or PhaseKind.DayClear) return;
         if (input == null || feedback == null) TryAcquireDependencies();
         if (input == null || feedback == null) return;
@@ -173,7 +219,7 @@ public sealed class GameManager : MonoBehaviour
         feedback.SetLight(state.IsTurnedBack && !battery.IsEmpty);
 
         // 4. 振り返り開始・終了イベント
-        UpdateAimEvents();
+        UpdateAimEvents(dt);
 
         // 撮影後の停止中は歩行・判定・音イベントを進めない。
         // ライト（3.）はこの手前で反映済みなので、停止中も点いたままになる。
@@ -216,11 +262,39 @@ public sealed class GameManager : MonoBehaviour
         }
     }
 
-    void UpdateAimEvents()
+    void UpdateAimEvents(float dt)
     {
-        if (state.IsTurnedBack && !wasTurnedBack) GameEvents.RaiseAimStarted();
-        if (!state.IsTurnedBack && wasTurnedBack) GameEvents.RaiseAimEnded();
+        if (state.IsTurnedBack && !wasTurnedBack)
+        {
+            GameEvents.RaiseAimStarted();
+            lookBackTimer = 0f;
+            hasRaisedLookBackHeld = false;
+        }
+
+        if (!state.IsTurnedBack && wasTurnedBack)
+        {
+            GameEvents.RaiseAimEnded();
+            lookBackTimer = 0f;
+            hasRaisedLookBackHeld = false;
+        }
+
         wasTurnedBack = state.IsTurnedBack;
+
+        if (state.IsTurnedBack && !isHolding)
+        {
+            lookBackTimer += dt;
+            float threshold = balance != null ? balance.lookBackDurationThreshold : 2f;
+            if (lookBackTimer >= threshold && !hasRaisedLookBackHeld)
+            {
+                hasRaisedLookBackHeld = true;
+                GameEvents.RaiseLookBackHeld();
+            }
+        }
+        else
+        {
+            lookBackTimer = 0f;
+            hasRaisedLookBackHeld = false;
+        }
     }
 
     float RemainToDayEnd()
@@ -254,6 +328,7 @@ public sealed class GameManager : MonoBehaviour
 
         GameEvents.RaiseSoundPlayed(def.kind);
         GameEvents.RaiseJudgeWindowOpened(config.judgeWindowDuration);
+        GameEvents.RaiseGhostAppeared();
     }
 
     // ---------------------------------------------------------------
@@ -309,6 +384,8 @@ public sealed class GameManager : MonoBehaviour
         GameEvents.RaiseJudged(result);
         GameEvents.RaiseAimEnded();
         wasTurnedBack = false;
+        lookBackTimer = 0f;
+        hasRaisedLookBackHeld = false;
 
         if (result == JudgeResult.Missed)
         {
@@ -342,7 +419,7 @@ public sealed class GameManager : MonoBehaviour
         // state.ClearCurrentEvent()より前に呼ぶ必要がある（PickGhostSpriteがCurrentEventを参照するため）。
         if (ctx.didShutter)
         {
-            GameEvents.RaisePhotoCaptured(result == JudgeResult.Repelled ? PickGhostSprite() : null);
+            GameEvents.RaisePhotoCaptured(PickGhostSprite());
             StopSound();
         }
 
@@ -353,13 +430,12 @@ public sealed class GameManager : MonoBehaviour
     // ---------------------------------------------------------------
     // 撮影された幽霊画像の決定
     // ---------------------------------------------------------------
-    // SoundEventDefinitionに指定があればそれを優先し、無ければプールから抽選する。
-    // これにより「今はランダム、後から特定の音に画像を紐づけたい」がコード変更なしで切り替わる。
-    // 抽選に UnityEngine.Random ではなく既存の System.Random を使うのは、音イベントと乱数源を揃えるため。
     Sprite PickGhostSprite()
     {
         var def = state.CurrentEvent;
-        if (def != null && def.ghostSprite != null) return def.ghostSprite;
+        if (def == null) return null;
+        if (def.ghostSprite != null) return def.ghostSprite;
+        if (def.kind != SoundKind.Anomaly) return null;
 
         var pool = balance.fallbackGhostSprites;
         if (pool == null || pool.Length == 0) return null;
@@ -408,6 +484,13 @@ public sealed class GameManager : MonoBehaviour
     // ---------------------------------------------------------------
     void EndDay()
     {
+        if (calibrationCanvasInstance != null)
+        {
+            Destroy(calibrationCanvasInstance);
+            calibrationCanvasInstance = null;
+        }
+        isCalibrating = false;
+
         StopSound();
         state.SetPhase(PhaseKind.DayClear);
         feedback.SetLight(false);
@@ -448,6 +531,13 @@ public sealed class GameManager : MonoBehaviour
     // ---------------------------------------------------------------
     void GameOver(GameOverReason reason)
     {
+        if (calibrationCanvasInstance != null)
+        {
+            Destroy(calibrationCanvasInstance);
+            calibrationCanvasInstance = null;
+        }
+        isCalibrating = false;
+
         StopSound();
         state.SetPhase(PhaseKind.GameOver);
         feedback.SetLight(false);
@@ -477,7 +567,16 @@ public sealed class GameManager : MonoBehaviour
         GameEvents.OnDayClearContinue -= OnContinue;
         waitingContinue = false;
 
+        if (calibrationCanvasInstance != null)
+        {
+            Destroy(calibrationCanvasInstance);
+            calibrationCanvasInstance = null;
+        }
+        isCalibrating = false;
+
         wasTurnedBack = false;
+        lookBackTimer = 0f;
+        hasRaisedLookBackHeld = false;
         holdTimer = 0f;
         StartGame();
     }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d07fc6478087e8428a4a133f282610d, type: 3}
   m_Name: Day5Config
   m_EditorClassIdentifier: Assembly-CSharp::DayConfig
-  day: 1
+  day: 5
   requiredWalkSeconds: 70
   eventCount: 9
   anomalyRatio: 0.45
