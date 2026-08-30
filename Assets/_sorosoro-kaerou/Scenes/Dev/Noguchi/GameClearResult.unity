@@ -628,8 +628,8 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5241513109602506646, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
   m_PrefabInstance: {fileID: 596323233}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &596323235 stripped
-Transform:
+--- !u!224 &596323235 stripped
+RectTransform:
   m_CorrespondingSourceObject: {fileID: 6884728386458180863, guid: 9cc8c920e4775bd49a162a2cdb2d1d85, type: 3}
   m_PrefabInstance: {fileID: 596323233}
   m_PrefabAsset: {fileID: 0}
@@ -871,10 +871,10 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 596323235}
   - {fileID: 1053912099}
   - {fileID: 1858377889}
   - {fileID: 617756346}
+  - {fileID: 596323235}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
