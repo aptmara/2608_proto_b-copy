@@ -152,7 +152,7 @@ public sealed class GameManager : MonoBehaviour
         // 進行度・音イベントのTickが一切進まなくなるため、ここではWalkingに統一する。
         state.SetPhase(PhaseKind.Walking);
 
-        GameEvents.RaiseDayStarted(config.day);
+        GameEvents.RaiseDayStarted(dayCounter.CurrentDay);
         GameEvents.RaiseBatteryChanged(battery.Normalized);
         GameEvents.RaiseProgressChanged(progress.Normalized);
 
