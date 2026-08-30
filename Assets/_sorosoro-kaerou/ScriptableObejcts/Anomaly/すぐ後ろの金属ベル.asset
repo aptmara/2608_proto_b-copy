@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6231f1c42ee5414b8515f22116a7140, type: 3}
+  m_Name: "\u3059\u3050\u5F8C\u308D\u306E\u91D1\u5C5E\u30D9\u30EB"
+  m_EditorClassIdentifier: Assembly-CSharp::SoundEventDefinition
+  clip: {fileID: 8300000, guid: b4c91771da85e9748bbfc8ee98e05b32, type: 3}
+  kind: 1
+  isConfusing: 0
+  pitch: 1
+  ghostSprite: {fileID: 0}

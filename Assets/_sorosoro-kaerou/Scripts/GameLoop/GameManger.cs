@@ -38,6 +38,10 @@ public sealed class GameManager : MonoBehaviour
     bool hasRaisedLookBackHeld;
     bool wasWalkingForward;
 
+    const float SoundVolumeDefault = 0.4f;
+    const float SoundVolumeAiming  = 0.6f;
+    bool isSoundEventPlaying;
+
     GameObject calibrationCanvasInstance;
     bool isCalibrating;
 
@@ -269,6 +273,8 @@ public sealed class GameManager : MonoBehaviour
             GameEvents.RaiseAimStarted();
             lookBackTimer = 0f;
             hasRaisedLookBackHeld = false;
+            if (isSoundEventPlaying && audioSource != null)
+                audioSource.volume = SoundVolumeAiming;
         }
 
         if (!state.IsTurnedBack && wasTurnedBack)
@@ -276,6 +282,8 @@ public sealed class GameManager : MonoBehaviour
             GameEvents.RaiseAimEnded();
             lookBackTimer = 0f;
             hasRaisedLookBackHeld = false;
+            if (isSoundEventPlaying && audioSource != null)
+                audioSource.volume = SoundVolumeDefault;
         }
 
         wasTurnedBack = state.IsTurnedBack;
@@ -320,8 +328,10 @@ public sealed class GameManager : MonoBehaviour
         if (audioSource != null && def.clip != null)
         {
             audioSource.pitch = def.pitch;
+            audioSource.volume = SoundVolumeDefault;
             audioSource.clip = def.clip;
             audioSource.Play();
+            isSoundEventPlaying = true;
         }
 
         judgeWindow.Open(config.judgeWindowDuration);
@@ -590,5 +600,7 @@ public sealed class GameManager : MonoBehaviour
         audioSource.Stop();
         audioSource.clip = null;
         audioSource.pitch = 1f;
+        audioSource.volume = 1f;
+        isSoundEventPlaying = false;
     }
 }
