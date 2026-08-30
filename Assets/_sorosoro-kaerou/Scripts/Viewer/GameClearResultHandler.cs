@@ -45,6 +45,18 @@ namespace SoroSoro.Events
         [SerializeField, Tooltip("電池残量を表示するTMP_Text")]
         private TMP_Text batteryText;
 
+        [Header("自動反映（GameOverシーン等用）")]
+        [SerializeField, Tooltip("Start時にGameEvents.LastGameOverDataを自動で反映するか")]
+        private bool autoDisplayGameOverOnStart = false;
+
+        private void Start()
+        {
+            if (autoDisplayGameOverOnStart && GameEvents.LastGameOverData != null)
+            {
+                DisplayResult(GameEvents.LastGameOverData);
+            }
+        }
+
         /// <summary>
         /// 日クリア時の結果（その日単位の値）をUIに反映します。
         /// ゲームオーバー理由は日クリア時に受け取れないため空にします。

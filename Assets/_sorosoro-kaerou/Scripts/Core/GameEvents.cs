@@ -71,6 +71,11 @@ namespace SoroSoro.Events
         // 端末ライト（トーチ）ON/OFF切り替え時
         public static event Action<bool> OnLightOnChanged;
 
+        /// <summary>
+        /// 直近のゲームオーバーリザルトデータ（シーン間での値引き継ぎ用）。
+        /// </summary>
+        public static ResultData LastGameOverData { get; private set; }
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()
         {
@@ -93,6 +98,7 @@ namespace SoroSoro.Events
             OnPhonePoseConfirmed = null;
             OnWalkingChanged = null;
             OnLightOnChanged = null;
+            LastGameOverData = null;
 
             // Enter Play Mode Options でDomain Reloadを切っていると前回のPlayの値が残るため必ず戻す
             lastRaisedBattery = -1f;
@@ -144,7 +150,10 @@ namespace SoroSoro.Events
             => OnDayClearContinue?.Invoke();
 
         public static void RaiseGameOver(ResultData data)
-            => OnGameOver?.Invoke(data);
+        {
+            LastGameOverData = data;
+            OnGameOver?.Invoke(data);
+        }
 
         public static void RaiseShutterRequested()
             => OnShutterRequested?.Invoke();
