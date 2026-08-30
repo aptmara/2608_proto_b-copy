@@ -49,13 +49,16 @@ namespace SoroSoro.Events
 
         // ゲームオーバー時（引数: 累計のリザルトデータ）
         public static event Action<ResultData> OnGameOver;
-        
+
         // 撮影時の硬直(演出用)
         public static event Action OnStagingFinished;
-        
+
         // 撮影が成立したときに発火。幽霊がいなければ null。
         public static event Action<Sprite> OnPhotoCaptured;
-        
+
+        // スマホを正しい姿勢で構え終わった時
+        public static event Action OnPhonePoseConfirmed;
+
         // 歩き音
         public static event Action<bool> OnWalkingChanged;
 
@@ -74,40 +77,73 @@ namespace SoroSoro.Events
             OnDayClearContinue = null;
             OnGameOver = null;
             OnShutterRequested = null;
+            OnStagingFinished = null;
+            OnPhotoCaptured = null;
+            OnPhonePoseConfirmed = null;
+            OnWalkingChanged = null;
 
             // Enter Play Mode Options でDomain Reloadを切っていると前回のPlayの値が残るため必ず戻す
             lastRaisedBattery = -1f;
         }
 
-        public static void RaiseDayStarted(int day) => OnDayStarted?.Invoke(day);
-        public static void RaiseSoundPlayed(SoundKind kind) => OnSoundPlayed?.Invoke(kind);
-        public static void RaiseJudgeWindowOpened(float duration) => OnJudgeWindowOpened?.Invoke(duration);
-        public static void RaiseAimStarted() => OnAimStarted?.Invoke();
-        public static void RaiseAimEnded() => OnAimEnded?.Invoke();
-        public static void RaiseJudged(JudgeResult result) => OnJudged?.Invoke(result);
+        public static void RaiseDayStarted(int day)
+            => OnDayStarted?.Invoke(day);
+
+        public static void RaiseSoundPlayed(SoundKind kind)
+            => OnSoundPlayed?.Invoke(kind);
+
+        public static void RaiseJudgeWindowOpened(float duration)
+            => OnJudgeWindowOpened?.Invoke(duration);
+
+        public static void RaiseAimStarted()
+            => OnAimStarted?.Invoke();
+
+        public static void RaiseAimEnded()
+            => OnAimEnded?.Invoke();
+
+        public static void RaiseJudged(JudgeResult result)
+            => OnJudged?.Invoke(result);
 
         private static float lastRaisedBattery = -1f;
 
         public static void RaiseBatteryChanged(float normalized, float threshold = 0.01f)
         {
-            if (Mathf.Abs(normalized - lastRaisedBattery) < threshold && normalized > 0f && normalized < 1f)
+            if (Mathf.Abs(normalized - lastRaisedBattery) < threshold &&
+                normalized > 0f &&
+                normalized < 1f)
             {
                 return;
             }
+
             lastRaisedBattery = normalized;
             OnBatteryChanged?.Invoke(normalized);
         }
 
-        public static void RaiseProgressChanged(float normalized) => OnProgressChanged?.Invoke(normalized);
-        public static void RaiseDayCleared(ResultData data) => OnDayCleared?.Invoke(data);
-        public static void RaiseDayClearContinue() => OnDayClearContinue?.Invoke();
-        public static void RaiseGameOver(ResultData data) => OnGameOver?.Invoke(data);
-        public static void RaiseShutterRequested() => OnShutterRequested?.Invoke();
+        public static void RaiseProgressChanged(float normalized)
+            => OnProgressChanged?.Invoke(normalized);
 
-        public static void RaiseStagingFinished() => OnStagingFinished?.Invoke();
+        public static void RaiseDayCleared(ResultData data)
+            => OnDayCleared?.Invoke(data);
 
-        public static void RaisePhotoCaptured(Sprite ghost) => OnPhotoCaptured?.Invoke(ghost);
+        public static void RaiseDayClearContinue()
+            => OnDayClearContinue?.Invoke();
 
-        public static void RaiseWalkingChanged(bool walking) => OnWalkingChanged?.Invoke(walking);
+        public static void RaiseGameOver(ResultData data)
+            => OnGameOver?.Invoke(data);
+
+        public static void RaiseShutterRequested()
+            => OnShutterRequested?.Invoke();
+
+        public static void RaiseStagingFinished()
+            => OnStagingFinished?.Invoke();
+
+        public static void RaisePhotoCaptured(Sprite ghost)
+            => OnPhotoCaptured?.Invoke(ghost);
+
+        public static void RaisePhonePoseConfirmed()
+            => OnPhonePoseConfirmed?.Invoke();
+
+        public static void RaiseWalkingChanged(bool walking)
+            => OnWalkingChanged?.Invoke(walking);
     }
 }

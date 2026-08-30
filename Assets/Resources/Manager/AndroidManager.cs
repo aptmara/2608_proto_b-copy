@@ -7,6 +7,8 @@ public class AndroidManager : Singleton<AndroidManager>
     public IFeedbackPresenter Feedback { get; private set; }
     public AndroidTorch Torch { get; private set; }
 
+    public PhoneGyro Gyro { get; private set; }
+
     protected override void Awake()
     {
         base.Awake();
@@ -14,5 +16,6 @@ public class AndroidManager : Singleton<AndroidManager>
         PlayerInput = GetComponent<AndroidPlayerInput>();
         Feedback = GetComponent<AndroidFeedbackPresenter>();
         Torch = GetComponent<AndroidTorch>();
+        Gyro = GetComponent<PhoneGyro>();
     }
 }

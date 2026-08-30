@@ -14,28 +14,63 @@ public class PhoneGyro : MonoBehaviour
     [SerializeField] private TMP_Text directionText;
     [SerializeField] private TMP_Text feedbackText;
 
-    // 参考表示用の生オイラー角(ジンバルロックで暴れるため判定には使わない)
+    // 参考表示用の生オイラー角
+    // ジンバルロックで暴れるため判定には使わない
     public Vector3 phoneAngle;
+
+    // =========================
+    // キャリブレーション用
+    // =========================
 
     // リセット時のYaw角度
     private float yawOffset = 0f;
 
-    // 直近フレームで計算した生のYaw(-180〜180、キャリブレーション前)
+    // リセット時のPitch角度
+    private float pitchOffset = 0f;
+
+    // =========================
+    // 生の角度
+    // =========================
+
+    // 直近フレームで計算した生のYaw
+    // -180〜180
     private float rawYaw;
 
-    // 現在の基準からのYaw角度(0=正面, 180=背後の連続角度。isBack判定に使用)
+    // 直近フレームで計算した生のPitch
+    private float rawPitch;
+
+    // =========================
+    // 現在の相対角度
+    // =========================
+
+    // 現在の基準からのYaw角度
+    // 0 = 正面
+    // 180 = 背後
+    // 0〜360
     public float relativeZ;
 
-    // 上下の傾き(度。上向きが正、範囲はおよそ-90〜90)
+    // 現在の基準からのPitch角度
+    // リセット時 = 0
     public float pitch;
+
+    // =========================
+    // 前後判定
+    // =========================
 
     // 反対方向を向いているか
     public bool isBack;
 
+    // =========================
+    // スマホの姿勢
+    // =========================
+
     // スマホの姿勢(Unity座標変換後)
     public Quaternion Rotation { get; private set; }
 
-    // フィードバック用のインターフェース
+    // =========================
+    // フィードバック
+    // =========================
+
     private IFeedbackPresenter feedback;
 
 
@@ -70,7 +105,11 @@ public class PhoneGyro : MonoBehaviour
 
         Quaternion attitude = gyro.attitude;
 
+
+        // =========================
         // Android座標 → Unity座標
+        // =========================
+
         Quaternion rotation = new Quaternion(
             attitude.x,
             attitude.y,
@@ -79,34 +118,73 @@ public class PhoneGyro : MonoBehaviour
         );
 
         Rotation = rotation;
-        phoneAngle = rotation.eulerAngles; // 参考表示用のみ(判定には使わない)
+
+        // 参考表示用
+        // ジンバルロックで暴れる可能性があるため
+        // 判定には使用しない
+        phoneAngle = rotation.eulerAngles;
 
 
         // =========================
-        // Yaw / Pitchをオイラー角ではなくベクトル射影(Atan2)で求める。
-        // オイラー角分解は途中の軸が90度付近になるとジンバルロックで
-        // 他の軸の値と入れ替わったように暴れるため、傾き操作(ピッチ)が
-        // 絡むこのアプリでは使えない。
+        // Yaw / Pitch計算
+        // =========================
+        //
+        // オイラー角ではなく、スマホのforwardベクトルから計算する。
+        //
+        // オイラー角分解は途中の軸が90度付近になると
+        // ジンバルロックによって他の軸の値と入れ替わったように
+        // 暴れるため使用しない。
         // =========================
 
-        // Vector3.upは体を振り向く回転(Yaw)の回転軸そのものに一致していて
-        // Yawに反応しなかったため、それと直交するVector3.forwardを使う
-        Vector3 lookDir = rotation * Vector3.forward; // スマホが向いている方向(要検証軸)
+        Vector3 lookDir = rotation * Vector3.forward;
 
-        // Yaw/PitchがY・Zで入れ替わって見えたため、ペアリングをx-y(Yaw) / z(Pitch)に変更
-        rawYaw = Mathf.Atan2(lookDir.x, lookDir.y) * Mathf.Rad2Deg;
-        pitch = Mathf.Asin(Mathf.Clamp(lookDir.z, -1f, 1f)) * Mathf.Rad2Deg;
 
-        relativeZ = Mathf.Repeat(rawYaw - yawOffset, 360f);
+        // =========================
+        // 生Yaw
+        // =========================
+
+        rawYaw =
+            Mathf.Atan2(lookDir.x, lookDir.y) *
+            Mathf.Rad2Deg;
+
+
+        // =========================
+        // 生Pitch
+        // =========================
+
+        rawPitch =
+            Mathf.Asin(
+                Mathf.Clamp(lookDir.z, -1f, 1f)
+            ) *
+            Mathf.Rad2Deg;
+
+
+        // =========================
+        // リセット基準からのYaw
+        // =========================
+
+        relativeZ =
+            Mathf.Repeat(
+                rawYaw - yawOffset,
+                360f
+            );
+
+
+        // =========================
+        // リセット基準からのPitch
+        // =========================
+
+        pitch =
+            rawPitch - pitchOffset;
 
 
         // =========================
         // 前 / 後ろ判定
         // =========================
 
-        if(!isBack)
+        if (!isBack)
         {
-            if ( 135 < relativeZ && relativeZ < 225)
+            if (135 < relativeZ && relativeZ < 225)
             {
                 isBack = true;
             }
@@ -116,21 +194,34 @@ public class PhoneGyro : MonoBehaviour
             if (315 < relativeZ || relativeZ < 45)
             {
                 isBack = false;
-                if (feedback.IsLightOn)
+
+                if (feedback != null && feedback.IsLightOn)
+                {
                     feedback.SetLight(false);
+                }
             }
         }
+
+
+        // =========================
+        // 後ろを向いているときのフィードバック
+        // =========================
 
         if (isBack)
         {
             feedback = AndroidManager.Instance.Feedback;
+
             if (feedback != null)
             {
-                if(!feedback.IsLightOn)
+                if (!feedback.IsLightOn)
+                {
                     feedback.SetLight(true);
+                }
+
                 feedback.Vibrate();
             }
         }
+
 
         // =========================
         // TMP：ローテーション表示
@@ -141,8 +232,9 @@ public class PhoneGyro : MonoBehaviour
             rotationText.text =
                 $"Yaw : {relativeZ:F1}°\n" +
                 $"Pitch : {pitch:F1}°\n" +
-                $"(raw X:{phoneAngle.x:F0} Y:{phoneAngle.y:F0} Z:{phoneAngle.z:F0})"
-                ;
+                $"(raw X:{phoneAngle.x:F0} " +
+                $"Y:{phoneAngle.y:F0} " +
+                $"Z:{phoneAngle.z:F0})";
         }
 
 
@@ -155,6 +247,7 @@ public class PhoneGyro : MonoBehaviour
             directionText.text =
                 $"反対向き : {isBack.ToString().ToUpper()}";
         }
+
 
         // =========================
         // Cubeをスマホと同じ向きにする
@@ -173,6 +266,23 @@ public class PhoneGyro : MonoBehaviour
 
     public void ResetRotation()
     {
+        // 現在のYawを0°の基準にする
         yawOffset = rawYaw;
+
+        // 現在のPitchを0°の基準にする
+        pitchOffset = rawPitch;
+
+        // リセット直後の表示値を明示的に0にする
+        relativeZ = 0f;
+        pitch = 0f;
+
+        // 必要なら前後判定もリセット
+        isBack = false;
+
+        // リセット時にライトが点いていたら消す
+        if (feedback != null && feedback.IsLightOn)
+        {
+            feedback.SetLight(false);
+        }
     }
 }
