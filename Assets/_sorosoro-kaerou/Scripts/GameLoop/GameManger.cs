@@ -31,6 +31,9 @@ public sealed class GameManager : MonoBehaviour
     DayStats dayStats;
     DayStats totalStats;
     bool wasTurnedBack;
+    float lookBackTimer;
+    bool hasRaisedLookBackHeld;
+    bool wasWalkingForward;
 
     // 空振り硬直
     // 撮影後の停止（演出待機 兼 空振り硬直）
@@ -115,6 +118,10 @@ public sealed class GameManager : MonoBehaviour
         progress.Reset(config.requiredWalkSeconds);
         judgeWindow.Close();
         state.ClearCurrentEvent();
+        wasTurnedBack = false;
+        lookBackTimer = 0f;
+        hasRaisedLookBackHeld = false;
+        wasWalkingForward = false;
 
         // Day0（fixedSequenceあり）はTutorialSequencer、本編はRandomSequencer
         sequencer = (config.fixedSequence != null && config.fixedSequence.Length > 0)
@@ -183,6 +190,12 @@ public sealed class GameManager : MonoBehaviour
         progress.Tick(dt, forward);
         soundPlayer.Tick(dt, forward);
         judgeWindow.Tick(dt); // 常に減算
+
+        if (forward != wasWalkingForward)
+        {
+            wasWalkingForward = forward;
+            GameEvents.RaiseWalkingChanged(forward);
+        }
 
         GameEvents.RaiseProgressChanged(progress.Normalized);
 
